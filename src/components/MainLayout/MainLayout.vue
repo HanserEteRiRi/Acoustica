@@ -56,6 +56,7 @@ const collapsed = ref<boolean>(false);
 }
 .main-content {
   // flex-grow: 1;
+  // background: #fff;
 }
 
 .main-layout {

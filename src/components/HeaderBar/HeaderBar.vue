@@ -12,7 +12,9 @@
             backgroundColor: avatarBgColor,
             verticalAlign: 'middle',
             cursor: 'pointer',
+            transition: 'transform 0.2s',
           }"
+          class="avatar"
           @click="handleClickAvatar"
         >
           {{ avatarValue }}
@@ -55,11 +57,15 @@ function handleCancel() {
 .logo {
   font-size: x-large;
   font-weight: bold;
-  color: #45454e;
+  color: #ffffff;
 }
 .layout-header {
-  background: #fff;
+  position: relative;
+  z-index: 1;
+  background: #6777ef;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  padding-right: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .inner-layout-header {
@@ -72,6 +78,10 @@ function handleCancel() {
   }
   .header-right {
     text-align: right;
+  }
+
+  :hover .avatar {
+    transform: scale(1.2);
   }
 }
 </style>
