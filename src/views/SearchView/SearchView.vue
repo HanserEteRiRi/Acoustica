@@ -12,19 +12,23 @@
       class="search-input"
     />
     <div></div>
+    <SearchResultItem
+      :index="index"
+      :cover-url="defaultAlbumCover"
+      title="aaa"
+      artist="fef"
+    />
+    <div class="searchList"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useStore } from "vuex";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
+
 import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue";
 import defaultAlbumCover from "@/assets/cover.jpg";
-
-const store = useStore();
-const router = useRouter();
-const route = useRoute();
 
 const searchValue = ref<string>("");
 const isLoading = ref<boolean>(false);
@@ -38,12 +42,6 @@ function handleSearch(value: string | undefined, event: Event) {
   setTimeout(() => {
     console.log(value);
     isLoading.value = false;
-    router.push({
-      path: "/search",
-      query: {
-        keywords: value,
-      },
-    });
   }, 1000);
 }
 

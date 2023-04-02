@@ -18,7 +18,7 @@
         <a-layout class="content-layout">
           <a-layout-content class="main-content">
             <div class="bread-crumb">
-              <BreadCrumb />
+              <!-- <BreadCrumb /> -->
             </div>
             <router-view></router-view>
           </a-layout-content>
@@ -49,14 +49,17 @@ const collapsed = ref<boolean>(false);
   bottom: 0;
   height: 95vh;
   position: relative;
+  height: calc(100vh - 64px);
 }
 
 .layout-sider-wrapper {
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
+  border-right: 0.5px solid rgba(0, 0, 0, 0.1);
 }
 .main-content {
   // flex-grow: 1;
-  // background: #fff;
+  background: #fff;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .main-layout {
