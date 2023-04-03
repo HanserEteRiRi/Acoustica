@@ -35,7 +35,7 @@
 import { ref } from "vue";
 import HeaderBar from "@/components/HeaderBar/HeaderBar.vue";
 import SiderBar from "@/components/SiderBar/SiderBar.vue";
-import BreadCrumb from "@/components/BreadCrumb/BreadCrumb.vue";
+// import BreadCrumb from "@/components/BreadCrumb/BreadCrumb.vue";
 import MusicPlayer from "../MusicPlayer/MusicPlayer.vue";
 
 const collapsed = ref<boolean>(false);
