@@ -100,6 +100,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from "vue";
+
 import defaultAlbumCover from "@/assets/logo.png";
 import SetVolume from "./SetVolume/SetVolume.vue";
 import PlayList from "./PlayList/PlayList.vue";

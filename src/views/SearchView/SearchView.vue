@@ -12,37 +12,58 @@
       class="search-input"
     />
     <div></div>
-    <SearchResultItem
-      :index="index"
-      :cover-url="defaultAlbumCover"
-      title="aaa"
-      artist="fef"
-    />
-    <div class="searchList"></div>
+
+    <div class="searchList">
+      <SearchResultItem
+        v-for="(result, index) in searchResults"
+        :key="index"
+        :index="index"
+        :cover-url="result.pic || defaultAlbumCover"
+        :title="result.name"
+        :artist="result.artist"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useStore } from "vuex";
-import { useRoute } from "vue-router";
-
+import axios from "axios";
+import { useRoute, useRouter } from "vue-router";
 import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue";
 import defaultAlbumCover from "@/assets/cover.jpg";
 
-const searchValue = ref<string>("");
+const store = useStore();
+const router = useRouter();
+const route = useRoute();
+const searchValue = ref<string>(route.query.keywords as string);
 const isLoading = ref<boolean>(false);
-
-const index = 1;
+const searchResults = ref<any[]>([]);
 
 // 处理搜索
-function handleSearch(value: string | undefined, event: Event) {
+function handleSearch(value: string | undefined) {
   isLoading.value = true;
   console.log(value);
-  setTimeout(() => {
-    console.log(value);
-    isLoading.value = false;
-  }, 1000);
+  router.push({
+    path: "/search",
+    query: {
+      keywords: value,
+    },
+  });
+  // 用 value 向服务器发送请求
+  axios
+    .post("/api/search", {
+      searchMusic: value,
+    })
+    .then((response) => {
+      console.log(response.data);
+      searchResults.value = response.data;
+      isLoading.value = false;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 }
 
 // 处理搜索框字符串变动
@@ -51,6 +72,10 @@ function handleInput(event: Event) {
   if (!target) return;
   console.log("输入值为：", target.value);
 }
+
+onMounted(() => {
+  handleSearch(searchValue.value);
+});
 </script>
 
 <style lang="less" scoped>
@@ -66,7 +91,7 @@ function handleInput(event: Event) {
 }
 
 .searchList {
-  width: 400px;
+  width: 80%;
   margin: 0 auto;
   margin-top: 20px;
   background-color: #fff;
