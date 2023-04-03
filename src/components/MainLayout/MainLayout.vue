@@ -58,6 +58,7 @@ const collapsed = ref<boolean>(false);
 .main-content {
   // flex-grow: 1;
   background: #fff;
+  // background: #000;
   overflow-y: auto;
   flex-grow: 1;
 }
