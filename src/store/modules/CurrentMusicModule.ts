@@ -17,7 +17,7 @@ export interface CurrentMusicState {
   volume: number; // 音量
 }
 
-const music: Module<CurrentMusicState, RootState> = {
+const currentMusic: Module<CurrentMusicState, RootState> = {
   state: {
     hasMusic: false,
     currentMusic: "",
@@ -49,3 +49,5 @@ const music: Module<CurrentMusicState, RootState> = {
     },
   },
 };
+
+export default currentMusic;
