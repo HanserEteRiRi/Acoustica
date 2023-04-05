@@ -1,7 +1,10 @@
 <template>
-  <div class="music-item">
+  <div class="music-item" @click="handleClick">
     <a-row>
-      <a-col :span="18" class="music-item-left">
+      <a-col :span="2">
+        
+      </a-col>
+      <a-col :span="8" class="music-item-left">
         <span class="item-index">{{ props.index }}</span>
         <a-avatar :src="props.coverUrl" size="large"></a-avatar>
         <span class="item-title">{{ props.title }}</span>
@@ -15,6 +18,9 @@
 
 <script setup lang="ts">
 import { defineProps } from "vue";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const props = defineProps({
   index: {
@@ -34,6 +40,15 @@ const props = defineProps({
     required: true,
   },
 });
+
+const handleClick = () => {
+  // console.log("click");
+  store.dispatch("currentMusic", {
+    coverUrl: props.coverUrl,
+    title: props.title,
+    artist: props.artist,
+  });
+};
 </script>
 
 <style scoped>
@@ -44,11 +59,13 @@ const props = defineProps({
   width: 100%;
   padding: 8px 0;
   border: 1px solid transparent;
-  transition: all 0.3s;
+  border-radius: 10px;
+  /* transition: all 0.3s; */
+  border-color: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .music-item:hover {
-  border-color: rgba(0, 0, 0, 0.1);
 }
 
 .item-index {

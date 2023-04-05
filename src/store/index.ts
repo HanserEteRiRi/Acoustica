@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 import user from "./modules/UserModule";
 import theme from "./modules/ThemeModule";
@@ -9,4 +10,10 @@ export default createStore({
     user,
     theme,
   },
+  plugins: [
+    createPersistedState({
+      key: "acoustica",
+      storage: window.localStorage,
+    }),
+  ],
 });

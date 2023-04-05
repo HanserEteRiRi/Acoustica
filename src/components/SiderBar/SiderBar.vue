@@ -18,6 +18,10 @@
         <UserOutlined />
         <span>上传</span>
       </a-menu-item>
+      <a-menu-item key="/setting" @click="handleMenuClick('/playback')">
+        <FileOutlined />
+        <span>设置</span>
+      </a-menu-item>
     </a-menu>
   </a-layout>
 </template>

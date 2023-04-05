@@ -6,6 +6,7 @@ import Community from "@/views/CommunityView/CommunityView.vue";
 import Upload from "@/views/UploadView/UploadView.vue";
 import RankDetail from "@/views/RankDetailView/RankDetailView.vue";
 import SearchView from "@/views/SearchView/SearchView.vue";
+import SettingView from "@/views/SettingView/SettingView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -44,6 +45,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "search",
         name: "search",
         component: SearchView,
+      },
+      {
+        path: "playback",
+        name: "playback",
+        component: SettingView,
       },
     ],
   },
