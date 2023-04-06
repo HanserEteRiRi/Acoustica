@@ -41,8 +41,14 @@ const playList: Module<PlayListState, RootState> = {
     setPlayList({ commit }, payload) {
       commit("setPlayList", payload);
     },
-    addMusic({ commit }, payload) {
-      commit("addMusic", payload);
+    addMusic({ commit, state }, payload) {
+      if (!payload.music) return;
+      // if already has this music
+      if (payload.music in state.playList) {
+      } else {
+        console.log(state.playList);
+        commit("addMusic", payload);
+      }
     },
     setCurrentIndex({ commit }, payload) {
       commit("setCurrentIndex", payload);
@@ -80,3 +86,5 @@ const playList: Module<PlayListState, RootState> = {
     },
   },
 };
+
+export default playList;

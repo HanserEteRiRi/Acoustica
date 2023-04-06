@@ -6,7 +6,6 @@ interface MusicState {
   cover: string;
   url: string;
   lrc: string;
-  
 }
 // 根状态
 interface RootState {
