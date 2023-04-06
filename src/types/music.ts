@@ -1,6 +1,6 @@
 // music interface
 export interface Music {
-  id: 
+  id?: string;
   name: string;
   artists?: string[];
   artist: string;
