@@ -1,3 +1,4 @@
+<!--  自定义播放器组件 -->
 <template>
   <div class="music-player">
     <audio
@@ -10,15 +11,15 @@
       <a-col :span="1.8" style="height: 100%">
         <img
           class="album-cover"
-          :src="albumCover"
+          :src="currentMusic.cover"
           alt="Album cover"
           @error="onImageError"
         />
       </a-col>
       <a-col :span="4" style="height: 100%">
         <div class="song-info">
-          <div class="song-title">secret base~君がくれたもの~</div>
-          <div class="song-artist">Silent Siren</div>
+          <div class="song-title">{{ currentMusic.name }}</div>
+          <div class="song-artist">{{ currentMusic.artist }}</div>
         </div>
       </a-col>
       <a-col :span="15" style="height: 100%">
@@ -45,7 +46,7 @@
             <a-col
               flex="35px"
               style="
-                display: flex;
+                display: flex
                 align-items: center;
                 justify-content: center;
               "
@@ -103,7 +104,7 @@ import { ref, onMounted, onUnmounted, computed } from "vue";
 
 import defaultAlbumCover from "@/assets/logo.png";
 import SetVolume from "./SetVolume/SetVolume.vue";
-import PlayList from "./PlayList/PlayList.vue";
+import PlayList from "@/components/PlayList/PlayList.vue";
 
 import {
   StepBackwardOutlined,
@@ -114,6 +115,10 @@ import {
   MenuFoldOutlined,
   CloudDownloadOutlined,
 } from "@ant-design/icons-vue";
+import { useStore } from "vuex";
+import { Music } from "@/types/music";
+
+const store = useStore();
 
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isPlaying = ref(false);
@@ -122,6 +127,8 @@ const sliderMax = ref(0);
 const albumCover = ref(defaultAlbumCover);
 const showMenu = ref(false);
 const showVolume = ref(false);
+
+const currentMusic = computed(() => store.state.currentMusic);
 
 const onImageError = () => {
   albumCover.value = defaultAlbumCover;

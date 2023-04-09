@@ -17,7 +17,7 @@
       <SearchResultItem
         v-for="(result, index) in searchResults"
         :key="index"
-        :index="index"
+        :index="index + 1"
         :cover-url="result.pic || defaultAlbumCover"
         :title="result.name"
         :artist="result.artist"

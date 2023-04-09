@@ -53,11 +53,11 @@ const collapsed = ref<boolean>(false);
 }
 
 .layout-sider-wrapper {
-  border-right: 0.5px solid rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 .main-content {
   // flex-grow: 1;
-  // background: #fff;
+  background: #fff;
   // background: #000;
   overflow-y: auto;
   flex-grow: 1;

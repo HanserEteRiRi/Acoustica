@@ -1,6 +1,7 @@
 import { Module } from "vuex";
 import RootState from "@/store/types";
 import { Music } from "@/types/music";
+import { ActionReasult } from "@/types/ActionReasult";
 
 export interface PlayListState {
   playList: Array<Music>;
@@ -30,24 +31,50 @@ const playList: Module<PlayListState, RootState> = {
     setPlayMode(state, payload) {
       state.playMode = payload.playMode;
     },
-    emptyPlayList(state) {
+    clearPlayList(state) {
       state.playList = [];
     },
     deleteMusic(state, payload) {
-      state.playList.splice(payload.index, 1);
+      console.log("deleteMusic:", payload.music.name, payload.music.artist);
+      state.playList.some((music, index) => {
+        if (
+          music.name === payload.music.name &&
+          music.artist === payload.music.artist
+        ) {
+          state.playList.splice(index, 1);
+          console.log("deleteMusic success");
+          return true;
+        } else {
+          console.log("deleteMusic failed");
+          return false;
+        }
+      });
     },
   },
   actions: {
     setPlayList({ commit }, payload) {
       commit("setPlayList", payload);
     },
-    addMusic({ commit, state }, payload) {
-      if (!payload.music) return;
-      // if already has this music
-      if (payload.music in state.playList) {
+    addMusic({ commit, state }, payload): ActionReasult {
+      if (!payload.music) return { success: false, message: "Music is null." };
+      const musicExist = state.playList.some((music) => {
+        return (
+          music.name === payload.music.name &&
+          music.artist === payload.music.artist
+        );
+      });
+      if (musicExist) {
+        return {
+          success: false,
+          message: "This music is already in the play list.",
+        };
       } else {
         console.log(state.playList);
         commit("addMusic", payload);
+        return {
+          success: true,
+          message: "Add music to play list successfully.",
+        };
       }
     },
     setCurrentIndex({ commit }, payload) {
@@ -56,8 +83,8 @@ const playList: Module<PlayListState, RootState> = {
     setPlayMode({ commit }, payload) {
       commit("setPlayMode", payload);
     },
-    emptyPlayList({ commit }) {
-      commit("emptyPlayList");
+    clearPlayList({ commit }) {
+      commit("clearPlayList");
     },
     deleteMusic({ commit }, payload) {
       commit("deleteMusic", payload);

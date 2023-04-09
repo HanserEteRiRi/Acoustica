@@ -1,22 +1,28 @@
 <template>
-  <div class="music-item">
-    <a-row>
-      <a-col :span="1"> </a-col>
-      <a-col :span="1" class="index">
-        <span class="item-index">{{ props.index }}</span></a-col
-      >
-      <a-col :span="8" class="music-item-left">
-        <a-avatar :src="props.coverUrl" size="large"></a-avatar>
-        <span class="item-title">{{ props.title }}</span>
-      </a-col>
-      <a-col :span="6" class="music-item-right">
-        <span class="item-artist">{{ props.artist }}</span>
-      </a-col>
-      <a-col :span="8" class="icon-container"
-        ><heart-outlined @click="handleStar" class="icon" />
-        <plus-outlined @click="addMusic" class="icon" />
-      </a-col>
-    </a-row>
+  <div class="outer-music-item">
+    <div class="music-item" @dblclick="handleDoubleClick">
+      <a-row>
+        <a-col :span="1"> </a-col>
+        <a-col :span="1" class="index">
+          <span class="item-index">{{ props.index }}</span></a-col
+        >
+        <a-col :span="8" class="music-item-left">
+          <a-avatar
+            class="music-avatar"
+            :src="props.coverUrl"
+            size="large"
+          ></a-avatar>
+          <span class="item-title">{{ props.title }}</span>
+        </a-col>
+        <a-col :span="6" class="music-item-right">
+          <span class="item-artist">{{ props.artist }}</span>
+        </a-col>
+        <a-col :span="8" class="icon-container"
+          ><heart-outlined @click="handleStar" class="icon" />
+          <plus-outlined @click="addMusic" class="icon" />
+        </a-col>
+      </a-row>
+    </div>
   </div>
 </template>
 
@@ -24,7 +30,9 @@
 import { defineProps } from "vue";
 import { useStore } from "vuex";
 import { PlusOutlined, HeartOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import { Music } from "@/types/music";
+import { ActionReasult } from "@/types/ActionReasult";
 
 const store = useStore();
 
@@ -62,8 +70,27 @@ const handleClick = () => {
   });
 };
 
-const addMusic = () => {
-  store.dispatch("addMusic", { music: music });
+const handleDoubleClick = () => {
+  // store.dispatch("addMusic", { music: music });
+  // store.dispatch("playMusic", { music: music });
+  store.dispatch("setCurrentMusic", {
+    currentMusic: {
+      name: props.title,
+      artist: props.artist,
+      cover: props.coverUrl,
+    },
+  });
+};
+
+const addMusic = async () => {
+  const state: ActionReasult = await store.dispatch("addMusic", {
+    music: music,
+  });
+  if (state.success === true) {
+    message.success(state.message);
+  } else {
+    message.error(state.message);
+  }
 };
 
 // const handleStar = () => {};
@@ -78,16 +105,31 @@ const addMusic = () => {
   /* display: flex; */
   /* justify-content: space-between; */
   /* align-items: center; */
+
   width: 100%;
   padding: 8px 0;
-  border: 1px solid transparent;
+
   border-radius: 10px;
+
+  /* border-bottom-width: 100px; */
   /* transition: all 0.3s; */
-  border-color: rgba(0, 0, 0, 0.1);
+
   /* align-items: center; */
+  transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .music-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.outer-music-item {
+  border-bottom: 1px solid transparent;
+  border-color: rgba(0, 0, 0, 0.1);
+  /* width: 100%;
+  height: 100%; */
 }
 
 .item-index {
@@ -98,13 +140,21 @@ const addMusic = () => {
   color: #acacac;
 }
 
+.music-avatar {
+  object-fit: cover;
+  height: 48px;
+  width: 48px;
+}
+
 .item-title {
   margin-left: 8px;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
-  /* font-weight: bold; */
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.8);
   font-size: 15px;
+  cursor: pointer;
 }
 
 .item-artist {
@@ -112,6 +162,7 @@ const addMusic = () => {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 a-row {

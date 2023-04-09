@@ -1,46 +1,39 @@
 import { Module } from "vuex";
 import RootState from "@/store/types";
+import { Music } from "@/types/music";
 
 export interface CurrentMusicState {
-  hasMusic: boolean; // 是否有音乐
-  currentMusic: string; // 当前播放的音乐
-  singer: string; // 歌手
-  cover: string; // 封面
-  album: string; // 专辑
-  lyric: string; // 歌词
-  duration: number; // 播放时长
-  currentTime: number; // 当前播放时间
-  isPlaying: boolean; // 是否正在播放
-  isLoop: boolean; // 是否循环播放
-  isRandom: boolean; // 是否随机播放
-  isMuted: boolean; // 是否静音
-  volume: number; // 音量
+  currentMusic: Music;
+  hasMusic: boolean;
 }
 
 const currentMusic: Module<CurrentMusicState, RootState> = {
   state: {
+    currentMusic: {
+      id: "",
+      name: "请选择音乐",
+      artists: [],
+      artist: "none",
+      cover: "https://www.bensound.com/bensound-img/ukulele.jpg",
+      url: "",
+      lrc: "",
+    },
     hasMusic: false,
-    currentMusic: "",
-    singer: "",
-    cover: "",
-    album: "",
-    lyric: "",
-    duration: 0,
-    currentTime: 0,
-    isPlaying: false,
-    isLoop: false,
-    isRandom: false,
-    isMuted: false,
-    volume: 0.5,
   },
   mutations: {
     setHasMusic(state, payload) {
       state.hasMusic = payload.hasMusic;
     },
+    setCurrentMusic(state, payload) {
+      state.currentMusic = payload.currentMusic;
+    },
   },
   actions: {
     setHasMusic({ commit }, payload) {
       commit("setHasMusic", payload);
+    },
+    setCurrentMusic({ commit }, payload) {
+      commit("setCurrentMusic", payload);
     },
   },
   getters: {

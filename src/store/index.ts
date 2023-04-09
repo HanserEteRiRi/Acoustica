@@ -11,6 +11,7 @@ export default createStore({
     user,
     theme,
     playList,
+    currentMusic,
   },
   plugins: [
     createPersistedState({

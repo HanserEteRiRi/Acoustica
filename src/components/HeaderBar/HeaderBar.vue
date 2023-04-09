@@ -57,15 +57,17 @@ function handleCancel() {
 .logo {
   font-size: x-large;
   font-weight: bold;
-  color: #ffffff;
+  // color: #ffffff;
+  color: #6777ef;
 }
 .layout-header {
   position: relative;
   z-index: 1;
-  background: #6777ef;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  // background: #6777ef;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-right: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .inner-layout-header {
