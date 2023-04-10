@@ -3,8 +3,13 @@ import RootState from "@/store/types";
 import { Music } from "@/types/music";
 import { ActionReasult } from "@/types/ActionReasult";
 
+interface PlayItem {
+  music: Music;
+  isPlaying: boolean;
+}
+
 export interface PlayListState {
-  playList: Array<Music>;
+  playList: Array<PlayItem>;
   count: number;
   currentIndex: number;
   playMode: number;
@@ -15,7 +20,7 @@ const playList: Module<PlayListState, RootState> = {
   state: {
     playList: [],
     count: 0,
-    currentIndex: -1,
+    currentIndex: 0,
     playMode: 0,
   },
   mutations: {
@@ -27,6 +32,7 @@ const playList: Module<PlayListState, RootState> = {
     },
     setCurrentIndex(state, payload) {
       state.currentIndex = payload.currentIndex;
+      console.log("setCurrentIndex:", state.currentIndex);
     },
     setPlayMode(state, payload) {
       state.playMode = payload.playMode;
@@ -36,10 +42,10 @@ const playList: Module<PlayListState, RootState> = {
     },
     deleteMusic(state, payload) {
       console.log("deleteMusic:", payload.music.name, payload.music.artist);
-      state.playList.some((music, index) => {
+      state.playList.some((item, index) => {
         if (
-          music.name === payload.music.name &&
-          music.artist === payload.music.artist
+          item.music.title === payload.music.title &&
+          item.music.artist === payload.music.artist
         ) {
           state.playList.splice(index, 1);
           console.log("deleteMusic success");
@@ -50,6 +56,11 @@ const playList: Module<PlayListState, RootState> = {
         }
       });
     },
+    moveMusic(state, payload) {
+      const { oldIndex, newIndex } = payload;
+      const music = state.playList.splice(oldIndex, 1)[0];
+      state.playList.splice(newIndex, 0, music);
+    },
   },
   actions: {
     setPlayList({ commit }, payload) {
@@ -57,10 +68,10 @@ const playList: Module<PlayListState, RootState> = {
     },
     addMusic({ commit, state }, payload): ActionReasult {
       if (!payload.music) return { success: false, message: "Music is null." };
-      const musicExist = state.playList.some((music) => {
+      const musicExist = state.playList.some((item) => {
         return (
-          music.name === payload.music.name &&
-          music.artist === payload.music.artist
+          item.music.title === payload.music.title &&
+          item.music.artist === payload.music.artist
         );
       });
       if (musicExist) {
@@ -89,6 +100,23 @@ const playList: Module<PlayListState, RootState> = {
     deleteMusic({ commit }, payload) {
       commit("deleteMusic", payload);
     },
+    moveMusic({ commit }, payload) {
+      commit("moveMusic", payload);
+    },
+    nextMusic({ commit, state }) {
+      if (state.playMode === 0) {
+        state.currentIndex++;
+        if (state.currentIndex >= state.playList.length) {
+          state.currentIndex = 0;
+        }
+      } else if (state.playMode === 1) {
+        state.currentIndex = Math.floor(Math.random() * state.playList.length);
+      } // else if (state.playMode === 2) {循环播放}，不需要改变currentIndex
+      commit("setCurrentIndex", { currentIndex: state.currentIndex });
+      this.dispatch("currentMusic/setCurrentMusic", {
+        currentMusic: state.playList[state.currentIndex],
+      });
+    },
   },
   getters: {
     playList(state) {
@@ -99,17 +127,6 @@ const playList: Module<PlayListState, RootState> = {
     },
     playMode(state) {
       return state.playMode;
-    },
-    nextMusic(state) {
-      if (state.playMode === 0) {
-        state.currentIndex++;
-        return state.playList[state.currentIndex + 1];
-      } else if (state.playMode === 1) {
-        state.currentIndex = Math.floor(Math.random() * state.playList.length);
-        return state.playList[state.currentIndex];
-      } else if (state.playMode === 2) {
-        return state.playList[state.currentIndex];
-      }
     },
   },
 };

@@ -1,13 +1,13 @@
 <template>
-  <div class="music-item">
+  <div class="music-item" @dblclick="handleDoubleClick">
     <a-row>
       <a-col :span="1"> </a-col>
       <a-col :span="1" class="index">
-        <span class="item-index">{{ props.index }}</span></a-col
+        <span class="item-index">{{ indexDisplay }}</span></a-col
       >
       <a-col :span="10" class="music-item-left">
         <!-- <a-avatar :src="props.coverUrl" size="large"></a-avatar> -->
-        <span class="item-title">{{ props.title }}</span>
+        <span :class="titleClass">{{ props.title }}</span>
       </a-col>
       <a-col :span="8" class="music-item-right">
         <span class="item-artist">{{ props.artist }}</span>
@@ -33,44 +33,58 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  coverUrl: {
-    type: String,
+  music: {
+    type: Object as () => Music,
     required: true,
   },
-  title: {
-    type: String,
-    required: true,
-  },
-  artist: {
-    type: String,
-    required: true,
-  },
+});
+
+const indexDisplay = computed(() => {
+  return props.index + 1;
 });
 
 // computed不可删除，否则当List变化时，music不会变化
 const music = computed(() => {
   return {
-    name: props.title,
-    artist: props.artist,
-    cover: props.coverUrl,
+    index: props.index,
+    name: props.music.title,
+    artist: props.music.artist,
+    cover: props.music.cover,
   };
 });
 
-const handleClick = () => {
-  // console.log("click");
-  store.dispatch("currentMusic", {
-    coverUrl: props.coverUrl,
-    title: props.title,
-    artist: props.artist,
-  });
-};
+// 播放歌曲高亮
+const titleClass = computed(() => {
+  console.log("currentIndex:", store.state.playList.currentIndex);
+  console.log("music index:", music.value.index);
+  return {
+    "item-title": true,
+    "item-title-playing":
+      store.state.playList.currentIndex === music.value.index,
+  };
+});
 
+// 删除音乐
 const deleteMusic = () => {
   store.dispatch("deleteMusic", {
     music: music.value,
   });
 };
 
+// 双击播放
+const handleDoubleClick = () => {
+  store.dispatch("setCurrentMusic", {
+    currentMusic: {
+      name: props.title,
+      artist: props.artist,
+      cover: props.coverUrl,
+      url: props.url,
+    },
+  });
+  store.dispatch("setCurrentIndex", {
+    currentIndex: props.index,
+  });
+};
 // const handleStar = () => {};
 </script>
 
@@ -92,6 +106,7 @@ const deleteMusic = () => {
   border-color: rgba(0, 0, 0, 0.1);
   /* align-items: center; */
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .music-item:hover {
@@ -116,6 +131,10 @@ const deleteMusic = () => {
   font-weight: bold;
   color: rgba(0, 0, 0, 0.8);
   font-size: 15px;
+}
+
+.item-title-playing {
+  color: #1890ff;
 }
 
 .item-artist {

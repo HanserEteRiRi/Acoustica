@@ -11,12 +11,12 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
   state: {
     currentMusic: {
       id: "",
-      name: "请选择音乐",
+      title: "请选择音乐",
       artists: [],
       artist: "none",
       cover: "https://www.bensound.com/bensound-img/ukulele.jpg",
-      url: "",
-      lrc: "",
+      url: "https://www.bensound.com/bensound-music/bensound-ukulele.mp3",
+      lyric: "",
     },
     hasMusic: false,
   },
@@ -26,6 +26,7 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
     },
     setCurrentMusic(state, payload) {
       state.currentMusic = payload.currentMusic;
+      console.log("set CurrentMusic:", state.currentMusic);
     },
   },
   actions: {

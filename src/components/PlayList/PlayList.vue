@@ -16,14 +16,17 @@
       <a-empty v-if="!hasMusic" description="暂无歌曲"></a-empty>
       <div v-else>
         <div class="music-list">
+          <!-- <draggable :list="localPlayList" @end="onDragEnd"> -->
           <PlayListItem
             v-for="(music, index) in store.getters.playList"
-            :index="index + 1"
+            :index="index"
             :key="index"
             :coverUrl="music.cover"
             :title="music.name"
             :artist="music.artist"
+            :url="music.url"
           />
+          <!-- </draggable> -->
         </div>
       </div>
     </a-drawer>
@@ -31,10 +34,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits, defineProps, computed } from "vue";
+import { ref, defineEmits, defineProps, computed, watchEffect } from "vue";
 import { useStore } from "vuex";
 import type { DrawerProps } from "ant-design-vue";
 import PlayListItem from "./PlayListItem/PlayListItem.vue";
+import draggable from "vue-draggable-next";
 
 const props = defineProps({
   visible: {
@@ -48,6 +52,12 @@ const store = useStore();
 const placement = ref<DrawerProps["placement"]>("right");
 const visible = ref<boolean>(props.visible);
 const hasMusic = computed(() => store.getters.playList.length > 0);
+const localPlayList = ref(store.getters.playList);
+
+watchEffect(() => {
+  localPlayList.value = store.getters.playList;
+  // console.log("localPlayList", localPlayList.value);
+});
 
 const onClose = () => {
   visible.value = false;
@@ -56,6 +66,16 @@ const onClose = () => {
 
 const handleClear = () => {
   store.dispatch("clearPlayList");
+};
+
+interface DragEvent {
+  oldIndex: number;
+  newIndex: number;
+}
+const onDragEnd = (event: DragEvent) => {
+  const oldIndex = event.oldIndex;
+  const newIndex = event.newIndex;
+  store.dispatch("moveMusic", { oldIndex, newIndex });
 };
 </script>
 

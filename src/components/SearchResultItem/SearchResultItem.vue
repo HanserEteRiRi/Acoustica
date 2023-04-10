@@ -41,43 +41,26 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  coverUrl: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  artist: {
-    type: String,
+  music: {
+    type: Object as () => Music,
     required: true,
   },
 });
 
 const music: Music = {
-  name: props.title,
-  artist: props.artist,
-  cover: props.coverUrl,
-};
-
-const handleClick = () => {
-  // console.log("click");
-  store.dispatch("currentMusic", {
-    coverUrl: props.coverUrl,
-    title: props.title,
-    artist: props.artist,
-  });
+  title: props.music.title,
+  artist: props.music.artist,
+  cover: props.music.cover,
+  url: props.music.url,
 };
 
 const handleDoubleClick = () => {
-  // store.dispatch("addMusic", { music: music });
-  // store.dispatch("playMusic", { music: music });
   store.dispatch("setCurrentMusic", {
     currentMusic: {
-      name: props.title,
-      artist: props.artist,
-      cover: props.coverUrl,
+      name: props.music.title,
+      artist: props.music.artist,
+      cover: props.music.cover,
+      url: props.music.url,
     },
   });
 };
@@ -93,7 +76,9 @@ const addMusic = async () => {
   }
 };
 
-// const handleStar = () => {};
+const handleStar = () => {
+  return null;
+};
 </script>
 
 <style scoped>

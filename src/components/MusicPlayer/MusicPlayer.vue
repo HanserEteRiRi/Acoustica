@@ -3,7 +3,7 @@
   <div class="music-player">
     <audio
       ref="audioRef"
-      src="https://www.bensound.com/bensound-music/bensound-ukulele.mp3"
+      :src="currentMusic.url"
       @timeupdate="updateProgress"
       @loadedmetadata="setSliderMax"
     ></audio>
@@ -11,7 +11,7 @@
       <a-col :span="1.8" style="height: 100%">
         <img
           class="album-cover"
-          :src="currentMusic.cover"
+          :src="albumCover"
           alt="Album cover"
           @error="onImageError"
         />
@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watchEffect } from "vue";
 
 import defaultAlbumCover from "@/assets/logo.png";
 import SetVolume from "./SetVolume/SetVolume.vue";
@@ -119,16 +119,22 @@ import { useStore } from "vuex";
 import { Music } from "@/types/music";
 
 const store = useStore();
+// console.log("store", store.state.currentMusic);
 
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isPlaying = ref(false);
 const currentProgress = ref(0);
 const sliderMax = ref(0);
-const albumCover = ref(defaultAlbumCover);
 const showMenu = ref(false);
 const showVolume = ref(false);
+const albumCover = ref(defaultAlbumCover);
 
-const currentMusic = computed(() => store.state.currentMusic);
+const currentMusic = computed(() => store.state.currentMusic.currentMusic);
+watchEffect(() => {
+  albumCover.value = currentMusic.value.cover;
+});
+
+console.log("currentMusic 1", currentMusic.value);
 
 const onImageError = () => {
   albumCover.value = defaultAlbumCover;
@@ -152,6 +158,16 @@ const duration = computed(() => {
     .toString()
     .padStart(2, "0");
   return `${minutes}:${seconds}`;
+});
+
+const finishPlay = computed(() => {
+  return currentProgress.value === sliderMax.value;
+});
+
+watchEffect(() => {
+  if (finishPlay.value) {
+    store.dispatch("nextMusic");
+  }
 });
 
 function togglePlay() {

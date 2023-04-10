@@ -21,6 +21,7 @@
         :cover-url="result.pic || defaultAlbumCover"
         :title="result.name"
         :artist="result.artist"
+        :url="result.url"
       />
     </div>
   </div>
@@ -42,7 +43,7 @@ const isLoading = ref<boolean>(false);
 const searchResults = ref<any[]>([]);
 
 // 处理搜索
-function handleSearch(value: string | undefined) {
+async function handleSearch(value: string | undefined) {
   isLoading.value = true;
   console.log(value);
   router.push({

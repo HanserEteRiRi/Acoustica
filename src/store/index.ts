@@ -14,6 +14,7 @@ export default createStore({
     currentMusic,
   },
   plugins: [
+    // vuex持久化
     createPersistedState({
       key: "acoustica",
       storage: window.localStorage,
