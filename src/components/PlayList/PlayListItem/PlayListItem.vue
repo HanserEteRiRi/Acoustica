@@ -21,10 +21,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from "vue";
+import { ComputedRef, computed, defineProps } from "vue";
 import { useStore } from "vuex";
 import { CloseOutlined, HeartOutlined } from "@ant-design/icons-vue";
 import { Music } from "@/types/music";
+import MusicPlayer from "@/components/MusicPlayer/MusicPlayer.vue";
 
 const store = useStore();
 
@@ -46,10 +47,8 @@ const indexDisplay = computed(() => {
 // computed不可删除，否则当List变化时，music不会变化
 const music = computed(() => {
   return {
+    ...props.music,
     index: props.index,
-    name: props.music.title,
-    artist: props.music.artist,
-    cover: props.music.cover,
   };
 });
 

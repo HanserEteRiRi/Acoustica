@@ -11,7 +11,7 @@ export const searchMusic = async (value: string): Promise<any> => {
         title: item.name,
         artist: item.artist,
         artists: item.artists,
-        cover: item.cover,
+        cover: item.pic,
         url: item.url,
         lyric: item.lyric,
       };

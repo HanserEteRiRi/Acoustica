@@ -9,13 +9,13 @@
         <a-col :span="8" class="music-item-left">
           <a-avatar
             class="music-avatar"
-            :src="props.coverUrl"
+            :src="props.music.cover"
             size="large"
           ></a-avatar>
-          <span class="item-title">{{ props.title }}</span>
+          <span class="item-title">{{ props.music.title }}</span>
         </a-col>
         <a-col :span="6" class="music-item-right">
-          <span class="item-artist">{{ props.artist }}</span>
+          <span class="item-artist">{{ props.music.artist }}</span>
         </a-col>
         <a-col :span="8" class="icon-container"
           ><heart-outlined @click="handleStar" class="icon" />
@@ -33,6 +33,7 @@ import { PlusOutlined, HeartOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { Music } from "@/types/music";
 import { ActionReasult } from "@/types/ActionReasult";
+import { computed } from "@vue/reactivity";
 
 const store = useStore();
 
@@ -47,12 +48,11 @@ const props = defineProps({
   },
 });
 
-const music: Music = {
-  title: props.music.title,
-  artist: props.music.artist,
-  cover: props.music.cover,
-  url: props.music.url,
-};
+const music = computed(() => {
+  return {
+    ...props.music,
+  };
+});
 
 const handleDoubleClick = () => {
   store.dispatch("setCurrentMusic", {
@@ -67,7 +67,7 @@ const handleDoubleClick = () => {
 
 const addMusic = async () => {
   const state: ActionReasult = await store.dispatch("addMusic", {
-    music: music,
+    music: music.value,
   });
   if (state.success === true) {
     message.success(state.message);
