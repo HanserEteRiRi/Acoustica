@@ -8,6 +8,7 @@ import draggable from "vuedraggable";
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
 import "./assets/global.less";
+import services from "./services";
 
 const app = createApp(App);
 
@@ -16,5 +17,6 @@ app.use(router);
 app.use(Antd);
 app.component("VueDraggable", draggable);
 app.use(StarPlugin, { store });
+app.provide("services", services);
 
 app.mount("#app");

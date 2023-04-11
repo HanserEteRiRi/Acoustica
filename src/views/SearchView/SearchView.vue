@@ -28,22 +28,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, inject } from "vue";
 import { useStore } from "vuex";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue";
 import defaultAlbumCover from "@/assets/cover.jpg";
+import { Music } from "@/types/music";
+import { Services } from "@/services";
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const services: Services = inject<Services>("services");
 const searchValue = ref<string>(route.query.keywords as string);
 const isLoading = ref<boolean>(false);
 const searchResults = ref<any[]>([]);
 
 // 处理搜索
 async function handleSearch(value: string | undefined) {
+  if (!value) return;
   isLoading.value = true;
   console.log(value);
   router.push({
@@ -53,13 +57,11 @@ async function handleSearch(value: string | undefined) {
     },
   });
   // 用 value 向服务器发送请求
-  axios
-    .post("/api/search", {
-      searchMusic: value,
-    })
-    .then((response) => {
-      console.log(response.data);
-      searchResults.value = response.data;
+  await services
+    .searchMusic(value)
+    .then((res: Array<Music>) => {
+      console.log(res);
+      searchResults.value = res;
       isLoading.value = false;
     })
     .catch((error) => {
