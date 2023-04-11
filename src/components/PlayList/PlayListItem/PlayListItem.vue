@@ -7,10 +7,10 @@
       >
       <a-col :span="10" class="music-item-left">
         <!-- <a-avatar :src="props.coverUrl" size="large"></a-avatar> -->
-        <span :class="titleClass">{{ props.title }}</span>
+        <span :class="titleClass">{{ props.music.title }}</span>
       </a-col>
       <a-col :span="8" class="music-item-right">
-        <span class="item-artist">{{ props.artist }}</span>
+        <span class="item-artist">{{ props.music.artist }}</span>
       </a-col>
       <a-col :span="4" class="icon-container"
         ><heart-outlined @click="handleStar" class="icon" />

@@ -68,6 +68,9 @@ const playList: Module<PlayListState, RootState> = {
     },
     addMusic({ commit, state }, payload): ActionReasult {
       if (!payload.music) return { success: false, message: "Music is null." };
+      commit("clearPlayList");
+      console.log("addMusic:", payload.music.title, payload.music.artist);
+      console.log(state.playList);
       const musicExist = state.playList.some((item) => {
         return (
           item.music.title === payload.music.title &&
