@@ -31,10 +31,13 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
   },
   actions: {
     setHasMusic({ commit }, payload) {
+      if (!payload.hasMusic) return;
       commit("setHasMusic", payload);
     },
     setCurrentMusic({ commit }, payload) {
+      if (!payload.currentMusic) return;
       commit("setCurrentMusic", payload);
+      this.dispatch("addMusic", { music: payload.currentMusic, mode: "play" });
     },
   },
   getters: {

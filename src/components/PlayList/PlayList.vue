@@ -2,7 +2,7 @@
   <div>
     <a-drawer
       :width="500"
-      title="播放列表"
+      :title="'播放列表 (' + musicCount + ')'"
       :placement="placement"
       :visible="props.visible"
       @close="onClose"
@@ -13,6 +13,12 @@
         >
         <!-- <a-button type="primary" @click="onClose">确定</a-button> -->
       </template>
+      <template #footer>
+        <div class="footer">
+          <div>播放模式：</div>
+          <div>共 {{ musicCount }} 首</div>
+        </div>
+      </template>
       <a-empty v-if="!hasMusic" description="暂无歌曲"></a-empty>
       <div v-else>
         <div class="music-list">
@@ -21,10 +27,7 @@
             v-for="(music, index) in store.getters.playList"
             :index="index"
             :key="index"
-            :coverUrl="music.cover"
-            :title="music.name"
-            :artist="music.artist"
-            :url="music.url"
+            :music="music"
           />
           <!-- </draggable> -->
         </div>
@@ -52,6 +55,7 @@ const store = useStore();
 const placement = ref<DrawerProps["placement"]>("right");
 const visible = ref<boolean>(props.visible);
 const hasMusic = computed(() => store.getters.playList.length > 0);
+const musicCount = computed(() => store.getters.playList.length);
 const localPlayList = ref(store.getters.playList);
 
 watchEffect(() => {
@@ -83,5 +87,12 @@ const onDragEnd = (event: DragEvent) => {
 .music-list {
   height: 100%;
   overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  color: #3a3a3a;
+  font-size: 15px;
 }
 </style>

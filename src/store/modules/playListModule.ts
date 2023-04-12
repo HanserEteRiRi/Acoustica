@@ -3,8 +3,7 @@ import RootState from "@/store/types";
 import { Music } from "@/types/music";
 import { ActionReasult } from "@/types/ActionReasult";
 
-interface PlayItem {
-  music: Music;
+interface PlayItem extends Music {
   isPlaying: boolean;
 }
 
@@ -42,12 +41,10 @@ const playList: Module<PlayListState, RootState> = {
     },
     deleteMusic(state, payload) {
       console.log("deleteMusic:", payload.music.name, payload.music.artist);
+      let indexToDelete = -1;
       state.playList.some((item, index) => {
-        if (
-          item.music.title === payload.music.title &&
-          item.music.artist === payload.music.artist
-        ) {
-          state.playList.splice(index, 1);
+        if (item.id === payload.music.id) {
+          indexToDelete = index;
           console.log("deleteMusic success");
           return true;
         } else {
@@ -55,6 +52,24 @@ const playList: Module<PlayListState, RootState> = {
           return false;
         }
       });
+      if (indexToDelete !== -1) {
+        state.playList.splice(indexToDelete, 1);
+        console.log("deleteMusic success");
+        if (indexToDelete !== state.currentIndex) {
+          if (indexToDelete < state.currentIndex) {
+            // 删除的歌曲在当前播放歌曲之前
+            state.currentIndex--;
+          }
+        } else {
+          if (state.playList.length === 0) {
+            state.currentIndex = -1;
+          } else if (state.currentIndex === state.playList.length) {
+            state.currentIndex = 0;
+          }
+        }
+      } else {
+        console.log("deleteMusic failed");
+      }
     },
     moveMusic(state, payload) {
       const { oldIndex, newIndex } = payload;
@@ -68,16 +83,17 @@ const playList: Module<PlayListState, RootState> = {
     },
     addMusic({ commit, state }, payload): ActionReasult {
       if (!payload.music) return { success: false, message: "Music is null." };
-      commit("clearPlayList");
-      console.log("addMusic:", payload.music.title, payload.music.artist);
       console.log(state.playList);
-      const musicExist = state.playList.some((item) => {
-        return (
-          item.music.title === payload.music.title &&
-          item.music.artist === payload.music.artist
-        );
+      const index = state.playList.findIndex((item) => {
+        return item.id === payload.music.id;
       });
+      const musicExist = index !== -1;
       if (musicExist) {
+        if (payload.mode === "play") {
+          this.dispatch("setCurrentIndex", {
+            currentIndex: index,
+          });
+        }
         return {
           success: false,
           message: "This music is already in the play list.",
@@ -85,6 +101,11 @@ const playList: Module<PlayListState, RootState> = {
       } else {
         console.log(state.playList);
         commit("addMusic", payload);
+        if (payload.mode === "play") {
+          this.dispatch("setCurrentIndex", {
+            currentIndex: state.playList.length - 1,
+          });
+        }
         return {
           success: true,
           message: "Add music to play list successfully.",
@@ -116,7 +137,13 @@ const playList: Module<PlayListState, RootState> = {
         state.currentIndex = Math.floor(Math.random() * state.playList.length);
       } // else if (state.playMode === 2) {循环播放}，不需要改变currentIndex
       commit("setCurrentIndex", { currentIndex: state.currentIndex });
-      this.dispatch("currentMusic/setCurrentMusic", {
+      this.dispatch("setCurrentMusic", {
+        currentMusic: state.playList[state.currentIndex],
+      });
+    },
+    playMusicByIndex({ commit, state }, payload) {
+      commit("setCurrentIndex", { currentIndex: payload.index });
+      this.dispatch("setCurrentMusic", {
         currentMusic: state.playList[state.currentIndex],
       });
     },

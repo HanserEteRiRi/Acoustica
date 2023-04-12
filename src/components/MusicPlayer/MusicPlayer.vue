@@ -18,7 +18,7 @@
       </a-col>
       <a-col :span="4" style="height: 100%">
         <div class="song-info">
-          <div class="song-title">{{ currentMusic.name }}</div>
+          <div class="song-title">{{ currentMusic.title }}</div>
           <div class="song-artist">{{ currentMusic.artist }}</div>
         </div>
       </a-col>
@@ -119,7 +119,7 @@ import { useStore } from "vuex";
 import { Music } from "@/types/music";
 
 const store = useStore();
-// console.log("store", store.state.currentMusic);
+console.log("store", store.state.currentMusic);
 
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isPlaying = ref(false);
@@ -161,11 +161,14 @@ const duration = computed(() => {
 });
 
 const finishPlay = computed(() => {
-  return currentProgress.value === sliderMax.value;
+  return (
+    currentProgress.value != 0 && currentProgress.value === sliderMax.value
+  );
 });
 
 watchEffect(() => {
   if (finishPlay.value) {
+    console.log("finishPlay");
     store.dispatch("nextMusic");
   }
 });

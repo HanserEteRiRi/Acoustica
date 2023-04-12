@@ -25,7 +25,6 @@ import { ComputedRef, computed, defineProps } from "vue";
 import { useStore } from "vuex";
 import { CloseOutlined, HeartOutlined } from "@ant-design/icons-vue";
 import { Music } from "@/types/music";
-import MusicPlayer from "@/components/MusicPlayer/MusicPlayer.vue";
 
 const store = useStore();
 
@@ -74,10 +73,7 @@ const deleteMusic = () => {
 const handleDoubleClick = () => {
   store.dispatch("setCurrentMusic", {
     currentMusic: {
-      name: props.title,
-      artist: props.artist,
-      cover: props.coverUrl,
-      url: props.url,
+      ...props.music,
     },
   });
   store.dispatch("setCurrentIndex", {

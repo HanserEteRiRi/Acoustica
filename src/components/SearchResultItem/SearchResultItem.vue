@@ -57,10 +57,7 @@ const music = computed(() => {
 const handleDoubleClick = () => {
   store.dispatch("setCurrentMusic", {
     currentMusic: {
-      name: props.music.title,
-      artist: props.music.artist,
-      cover: props.music.cover,
-      url: props.music.url,
+      ...props.music,
     },
   });
 };
