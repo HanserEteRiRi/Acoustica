@@ -11,7 +11,7 @@
       size="large"
       class="search-input"
     />
-    <div></div>
+    <SearchTab :all-tab-list="tabList" />
 
     <div class="searchList">
       <SearchResultItem
@@ -30,6 +30,7 @@ import { useStore } from "vuex";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue";
+import SearchTab from "@/components/SearchTab/SearchTab.vue";
 import defaultAlbumCover from "@/assets/cover.jpg";
 import { Music } from "@/types/music";
 import { Services } from "@/services";
@@ -41,6 +42,7 @@ const services: Services = inject<Services>("services");
 const searchValue = ref<string>(route.query.keywords as string);
 const isLoading = ref<boolean>(false);
 const searchResults = ref<any[]>([]);
+const tabList = ["音乐", "视频"];
 
 // 处理搜索
 async function handleSearch(value: string | undefined) {
