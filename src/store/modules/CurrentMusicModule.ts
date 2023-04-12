@@ -26,7 +26,7 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
     },
     setCurrentMusic(state, payload) {
       state.currentMusic = payload.currentMusic;
-      console.log("set CurrentMusic:", state.currentMusic);
+      // console.log("set CurrentMusic:", state.currentMusic);
     },
   },
   actions: {
@@ -38,6 +38,19 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
       if (!payload.currentMusic) return;
       commit("setCurrentMusic", payload);
       this.dispatch("addMusic", { music: payload.currentMusic, mode: "play" });
+    },
+    removeCurrentMusic({ commit }) {
+      commit("setCurrentMusic", {
+        currentMusic: {
+          id: "",
+          title: "请选择音乐",
+          artists: [],
+          artist: "none",
+          cover: "https://www.bensound.com/bensound-img/ukulele.jpg",
+          url: "https://www.bensound.com/bensound-music/bensound-ukulele.mp3",
+          lyric: "",
+        },
+      });
     },
   },
   getters: {

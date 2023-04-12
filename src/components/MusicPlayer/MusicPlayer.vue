@@ -6,6 +6,7 @@
       :src="currentMusic.url"
       @timeupdate="updateProgress"
       @loadedmetadata="setSliderMax"
+      autoplay
     ></audio>
     <a-row class="inner-music-player">
       <a-col :span="1.8" style="height: 100%">
@@ -134,7 +135,11 @@ watchEffect(() => {
   albumCover.value = currentMusic.value.cover;
 });
 
-console.log("currentMusic 1", currentMusic.value);
+watchEffect(() => {
+  console.log("on currentMusic change");
+  const music = currentMusic.value;
+  isPlaying.value = true;
+});
 
 const onImageError = () => {
   albumCover.value = defaultAlbumCover;
@@ -225,6 +230,8 @@ function seek(value: number) {
 
 // 在组件挂载时，为audio元素添加事件监听器
 onMounted(() => {
+  console.log("onMounted");
+  isPlaying.value = false; // 浏览器会限制自动播放，所以这里先设置为false
   if (!audioRef.value) return;
   audioRef.value.addEventListener("ended", () => {
     isPlaying.value = false;
@@ -233,6 +240,8 @@ onMounted(() => {
 
 // 在组件卸载时，移除事件监听器
 onUnmounted(() => {
+  console.log("onUnmounted");
+
   if (!audioRef.value) return;
   audioRef.value.removeEventListener("ended", () => {
     isPlaying.value = false;

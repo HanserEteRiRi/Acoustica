@@ -61,6 +61,7 @@ const playList: Module<PlayListState, RootState> = {
             state.currentIndex--;
           }
         } else {
+          // 删除的歌曲是当前播放歌曲,需要重新设置当前播放歌曲
           if (state.playList.length === 0) {
             state.currentIndex = -1;
           } else if (state.currentIndex === state.playList.length) {
@@ -123,6 +124,7 @@ const playList: Module<PlayListState, RootState> = {
     },
     deleteMusic({ commit }, payload) {
       commit("deleteMusic", payload);
+      this.dispatch("playMusicByIndex");
     },
     moveMusic({ commit }, payload) {
       commit("moveMusic", payload);
@@ -141,11 +143,16 @@ const playList: Module<PlayListState, RootState> = {
         currentMusic: state.playList[state.currentIndex],
       });
     },
-    playMusicByIndex({ commit, state }, payload) {
-      commit("setCurrentIndex", { currentIndex: payload.index });
-      this.dispatch("setCurrentMusic", {
-        currentMusic: state.playList[state.currentIndex],
-      });
+    playMusicByIndex({ state }) {
+      if (state.currentIndex === -1) {
+        // 播放列表为空,清空当前播放歌曲
+        this.dispatch("removeCurrentMusic");
+      } else {
+        this.dispatch("setCurrentMusic", {
+          // 播放列表不为空，播放当前歌曲
+          currentMusic: state.playList[state.currentIndex],
+        });
+      }
     },
   },
   getters: {

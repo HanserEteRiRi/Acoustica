@@ -16,7 +16,6 @@
       <template #footer>
         <div class="footer">
           <div>播放模式：</div>
-          <div>共 {{ musicCount }} 首</div>
         </div>
       </template>
       <a-empty v-if="!hasMusic" description="暂无歌曲"></a-empty>
