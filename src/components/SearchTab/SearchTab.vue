@@ -5,11 +5,15 @@
         :class="['search-tab-item']"
         v-for="item in props.allTabList"
         :key="item"
-        @click="tabChange(item)"
+        @click="changeTab(item)"
       >
         <span class="search-tab-item-txt">{{ item }}</span>
       </li>
     </ul>
+    <!-- <a-radio-group v-model:value="value1" button-style="solid">
+      <a-radio-button value="a">音乐</a-radio-button>
+      <a-radio-button value="b">视频</a-radio-button>
+    </a-radio-group> -->
     <!-- <ul class="search-tab-filter">
       <li
         :class="[
@@ -26,6 +30,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useRouter } from "vue-router";
 import { ref, defineEmits, defineProps, computed, watchEffect } from "vue";
 const props = defineProps({
   allTabList: {
@@ -33,6 +38,14 @@ const props = defineProps({
     default: () => [],
   },
 });
+const emits = defineEmits(["changeTab"]);
+const router = useRouter();
+
+const changeTab = (tab) => {
+  // const query = { ...router.currentRoute.value.query, tab };
+  // router.push({ query });
+  emits("changeTab", tab);
+};
 </script>
 <style lang="less" scoped>
 ul,
