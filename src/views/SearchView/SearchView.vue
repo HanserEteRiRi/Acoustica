@@ -86,15 +86,10 @@ async function handleSearch(value: string | undefined) {
 }
 
 async function handleSearchVideo(value: string | undefined) {
-  // if (!value) return;
-  // isLoading.value = true;
+  if (!value) return;
+  isLoading.value = true;
   // console.log(value);
-  // router.push({
-  //   path: "/search",
-  //   query: {
-  //     keywords: value,
-  //   },
-  // });
+
   // 用 value 向服务器发送请求
   await services
     .searchVideo(value)
