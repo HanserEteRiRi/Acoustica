@@ -2,16 +2,7 @@
   <div class="home">
     <!-- <img alt="Vue logo" src="../../assets/logo.png" /> -->
     <div class="header">
-      <a-input-search
-        v-model:value="searchValue"
-        placeholder="input search loading with enterButton"
-        :loading="isLoading"
-        @search="handleSearch"
-        @input="handleInput"
-        enter-button
-        size="large"
-        class="search-input"
-      />
+      <SearchInput />
     </div>
 
     <div class="charts">
@@ -22,7 +13,7 @@
         </a-typography-paragraph>
       </a-typography>
       <div class="charts-container">
-        <div class="charts-card">
+        <!-- <div class="charts-card">
           <img :src="chinaChartsCover" alt="中国榜" />
         </div>
         <div class="charts-card">
@@ -33,7 +24,7 @@
         </div>
         <div class="charts-card">
           <img :src="globalChartsCover" alt="全球榜" />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -43,7 +34,7 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
-import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue";
+import SearchInput from "@/components/SearchInput/SearchInput.vue";
 import defaultAlbumCover from "@/assets/cover.jpg";
 import chinaChartsCover from "@/assets/charts/china.png";
 import englishChartsCover from "@/assets/charts/english.png";
@@ -59,18 +50,13 @@ const isLoading = ref<boolean>(false);
 
 // 处理搜索
 function handleSearch(value: string | undefined, event: Event) {
-  isLoading.value = true;
-  console.log(value);
-  setTimeout(() => {
-    console.log(value);
-    isLoading.value = false;
-    router.push({
-      path: "/search",
-      query: {
-        keywords: value,
-      },
-    });
-  }, 1000);
+  store.commit("menu/setSelectedKeys", [""]);
+  router.push({
+    path: "/search",
+    query: {
+      keywords: value,
+    },
+  });
 }
 
 // 处理搜索框字符串变动

@@ -5,6 +5,7 @@ import user from "./modules/UserModule";
 import theme from "./modules/ThemeModule";
 import playList from "./modules/PlayListModule";
 import currentMusic from "./modules/CurrentMusicModule";
+import menu from "./modules/MemuModule";
 
 export default createStore({
   modules: {
@@ -12,6 +13,7 @@ export default createStore({
     theme,
     playList,
     currentMusic,
+    menu,
   },
   plugins: [
     // vuex持久化

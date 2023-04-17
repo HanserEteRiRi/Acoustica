@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- <img alt="Vue logo" src="../../assets/logo.png" /> -->
-    <a-input-search
+    <!-- <a-input-search
       v-model:value="searchValue"
       placeholder="input search loading with enterButton"
       :loading="isLoading"
@@ -10,7 +10,8 @@
       enter-button
       size="large"
       class="search-input"
-    />
+    /> -->
+    <SearchInput @onSearch="handleSearch" :is-loading="isLoading" />
     <SearchTab :all-tab-list="tabList" @change-tab="changeTab" />
 
     <div class="searchList" v-if="isMusicTab">
@@ -36,6 +37,7 @@ import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue
 import SearchTab from "@/components/SearchTab/SearchTab.vue";
 import VideoList from "@/components/VideoList/VideoList.vue";
 import TheBottom from "@/components/TheBottom/TheBottom.vue";
+import SearchInput from "@/components/SearchInput/SearchInput.vue";
 // import defaultAlbumCover from "@/assets/cover.jpg";
 import { Music } from "@/types/music";
 import { Services } from "@/services";
@@ -62,7 +64,11 @@ const changeTab = (tab: string) => {
   router.push({ query });
 };
 // 处理搜索
-async function handleSearch(value: string | undefined) {
+// 如果在调用异步方法时没有提供 callback 参数，那么在异步方法内部，Promise 没有机会调用 resolve 函数
+async function handleSearch(
+  value: string | undefined,
+  callback: (result: string) => void
+) {
   if (!value) return;
   isLoading.value = true;
   console.log(value);
@@ -83,6 +89,8 @@ async function handleSearch(value: string | undefined) {
     .catch((error) => {
       console.log(error);
     });
+
+  callback("success");
 }
 
 async function handleSearchVideo(value: string | undefined) {
@@ -105,7 +113,9 @@ async function handleSearchVideo(value: string | undefined) {
 
 async function searchWithTab() {
   if (isMusicTab.value) {
-    await handleSearch(searchValue.value);
+    await handleSearch(searchValue.value, (result) => {
+      console.log(result);
+    });
   } else {
     await handleSearchVideo(searchValue.value);
   }
@@ -135,14 +145,16 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .home {
-  text-align: center;
+  text-align: left;
   color: #2c3e50;
   margin-top: 60px;
+  margin-left: 20px;
 }
 
 .search-input {
   width: 400px;
   margin: 0 auto;
+  text-align: left;
 }
 
 .searchList {

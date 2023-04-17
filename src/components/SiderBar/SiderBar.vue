@@ -39,17 +39,14 @@ import {
 } from "@ant-design/icons-vue";
 
 const store = useStore();
-// const theme = computed(() => store.state.theme.currentTheme);
-const selectedKeys = ref<string[]>(
-  // read from local storage
-  [localStorage.getItem("selectedKeys") || "/"]
-);
 const router = useRouter();
+// const theme = computed(() => store.state.theme.currentTheme);
+const selectedKeys = computed(() => store.state.menu.selectedKeys);
 
 // 点击Menu实现路由跳转
 function handleMenuClick(path: RouteLocationNormalizedLoaded["path"]) {
   // set selectedKeys to local storage
-  localStorage.setItem("selectedKeys", path);
+  store.commit("menu/setSelectedKeys", [path]);
   router.push(path);
 }
 </script>
