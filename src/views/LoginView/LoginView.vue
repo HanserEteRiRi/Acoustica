@@ -4,25 +4,36 @@
       v-model:visible="visible"
       :confirm-loading="confirmLoading"
       title="登录"
-      @ok="handleOk"
+      @ok="handleLogin"
       @cancel="handleCancel"
     >
       <a-form>
         <a-form-item
           label="用户名"
           name="username"
-          :rules="[{ required: true, message: '请输入用户名' }]"
+          :rules="[{ required: false, message: '请输入用户名' }]"
         >
           <a-input v-model="state.username" />
         </a-form-item>
         <a-form-item
           label="密码"
           name="password"
-          :rules="[{ required: true, message: '请输入密码' }]"
+          :rules="[{ required: false, message: '请输入密码' }]"
         >
           <a-input-password v-model="state.password" />
         </a-form-item>
-        <a-button type="primary" html-type="submit">登录</a-button>
+        <a-button
+          type="primary"
+          html-type="submit"
+          @click="handleLogin('register')"
+          >注册</a-button
+        >
+        <a-button
+          type="primary"
+          html-type="submit"
+          @click="handleLogin('login')"
+          >登录</a-button
+        >
       </a-form>
     </a-modal>
   </div>
@@ -33,6 +44,7 @@ import { reactive, ref, defineProps, defineEmits, watchEffect } from "vue";
 import { Form } from "ant-design-vue";
 import { useStore } from "vuex";
 import { message } from "ant-design-vue";
+import services from "@/services";
 
 const props = defineProps<{
   visible: boolean;
@@ -68,15 +80,22 @@ const handleCancel = () => {
   visible.value = false;
 };
 
-const handleOk = () => {
+/*
+ * @description: 登录
+ * @param {type} 登录类型, register or login
+ * @return {*}
+ */
+const handleLogin = async (type: string) => {
   modalText.value = "The modal will be closed after two seconds";
   confirmLoading.value = true;
-  setTimeout(() => {
-    message.success("登录成功", 2);
-    emit("login");
-    visible.value = false;
-    confirmLoading.value = false;
-  }, 2000);
+  await services.signIn(state.username, state.password, type).then((res) => {
+    if (res.status === 200) {
+      message.success("登录成功", 2);
+      emit("login");
+      visible.value = false;
+      confirmLoading.value = false;
+    }
+  });
 };
 
 watchEffect(() => {

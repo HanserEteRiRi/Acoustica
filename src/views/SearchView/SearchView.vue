@@ -33,6 +33,7 @@ import { ref, onMounted, inject, computed, watch } from "vue";
 import { useStore } from "vuex";
 // import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
+import { message } from "ant-design-vue";
 import SearchResultItem from "@/components/SearchResultItem/SearchResultItem.vue";
 import SearchTab from "@/components/SearchTab/SearchTab.vue";
 import VideoList from "@/components/VideoList/VideoList.vue";
@@ -63,6 +64,7 @@ const changeTab = (tab: string) => {
   const query = { ...router.currentRoute.value.query, tab };
   router.push({ query });
 };
+
 // 处理搜索
 // 如果在调用异步方法时没有提供 callback 参数，那么在异步方法内部，Promise 没有机会调用 resolve 函数
 async function handleSearch(
@@ -72,25 +74,26 @@ async function handleSearch(
   if (!value) return;
   isLoading.value = true;
   console.log(value);
-  router.push({
-    path: "/search",
-    query: {
-      keywords: value,
-    },
-  });
-  // 用 value 向服务器发送请求
-  await services
-    .searchMusic(value)
-    .then((res: Array<Music>) => {
-      console.log(res);
-      searchResults.value = res;
-      isLoading.value = false;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
 
-  callback("success");
+  const searchRequest = services.searchMusic(value);
+
+  const timeout = new Promise<string>((_, reject) => {
+    setTimeout(() => {
+      reject(new Error("服务器长时间未响应"));
+    }, 10000); // 10秒响应超时
+  });
+
+  try {
+    const result = await Promise.race([searchRequest, timeout]);
+    console.log(result);
+    searchResults.value = result;
+    isLoading.value = false;
+    callback("success");
+  } catch (error) {
+    if (error.message === "Network Error") message.error("网络错误");
+    else message.error(error.message);
+    isLoading.value = false;
+  }
 }
 
 async function handleSearchVideo(value: string | undefined) {
@@ -139,7 +142,9 @@ function handleInput(event: Event) {
 }
 
 onMounted(() => {
-  handleSearch(searchValue.value);
+  handleSearch(searchValue.value, (result) => {
+    console.log(result);
+  });
 });
 </script>
 

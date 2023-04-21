@@ -1,6 +1,7 @@
 <template>
   <a-layout-header class="layout-header">
     <div class="inner-layout-header">
+      <div class="menu"></div>
       <div class="header-left">
         <div class="logo">Acoustica</div>
       </div>
