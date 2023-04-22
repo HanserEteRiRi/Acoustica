@@ -6,7 +6,6 @@
     :loading="isLoading"
     @search="handleSearch"
     @input="handleInput"
-    enter-button
     size="large"
     class="search-input"
   />
@@ -65,3 +64,10 @@ function handleInput(event: Event) {
   console.log("输入值为：", target.value);
 }
 </script>
+
+<style lang="less" scoped>
+.search-input {
+  margin-left: 20px;
+  // border-radius: 50%;
+}
+</style>

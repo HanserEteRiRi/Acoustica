@@ -47,7 +47,7 @@
             <a-col
               flex="35px"
               style="
-                display: flex
+                display: flex;
                 align-items: center;
                 justify-content: center;
               "
@@ -251,7 +251,7 @@ onUnmounted(() => {
 
 <style lang="less" scoped>
 .music-player {
-  height: 58px;
+  height: 64px;
   position: absolute;
   bottom: 3%;
   left: 2%;
@@ -268,8 +268,8 @@ onUnmounted(() => {
 }
 
 .album-cover {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 10px;
   transition: transform 0.2s;
   cursor: pointer;

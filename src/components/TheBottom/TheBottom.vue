@@ -18,6 +18,7 @@
   background-color: #f9fafb;
   padding: 20px 0;
   height: 400px;
+  width: 100%;
 }
 
 .bottom-content {

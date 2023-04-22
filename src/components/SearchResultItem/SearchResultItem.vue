@@ -104,7 +104,7 @@ const handleStar = () => {
 .music-item:hover {
   background-color: rgba(0, 0, 0, 0.05);
   border-color: rgba(0, 0, 0, 0.1);
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .outer-music-item {
@@ -126,6 +126,7 @@ const handleStar = () => {
   object-fit: cover;
   height: 48px;
   width: 48px;
+  border-radius: 15%;
 }
 
 .item-title {

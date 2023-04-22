@@ -1,6 +1,6 @@
 <template>
   <div class="search-tab">
-    <ul class="search-tab-list">
+    <!-- <ul class="search-tab-list">
       <li
         :class="['search-tab-item']"
         v-for="item in props.allTabList"
@@ -9,7 +9,19 @@
       >
         <span class="search-tab-item-txt">{{ item }}</span>
       </li>
-    </ul>
+    </ul> -->
+    <a-radio-group v-model:value="value">
+      <!-- <a-radio-button value="a">Hangzhou</a-radio-button>
+      <a-radio-button value="b">Shanghai</a-radio-button> -->
+      <a-radio-button
+        v-for="item in props.allTabList"
+        :value="item"
+        :key="item"
+        @click="changeTab(item)"
+        class="search-tab-item"
+        >{{ item }}</a-radio-button
+      >
+    </a-radio-group>
     <!-- <a-radio-group v-model:value="value1" button-style="solid">
       <a-radio-button value="a">音乐</a-radio-button>
       <a-radio-button value="b">视频</a-radio-button>
@@ -40,6 +52,7 @@ const props = defineProps({
 });
 const emits = defineEmits(["changeTab"]);
 const router = useRouter();
+const value = ref(router.currentRoute.value.query.tab || props.allTabList[0]);
 
 const changeTab = (tab) => {
   // const query = { ...router.currentRoute.value.query, tab };
@@ -57,32 +70,19 @@ li {
   padding-inline-start: 0;
 }
 .search-tab {
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 90%;
   .search-tab-list {
     display: flex;
     margin-bottom: 22px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    // border-bottom: 1px solid rgba(0, 0, 0, 0.15);
   }
   .search-tab-item {
-    color: #242f44;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 16px;
-    padding-bottom: 10px;
-    margin-right: 64px;
-    cursor: pointer;
-    .search-tab-item-txt {
-      display: inline-block;
-    }
-    &:last-child {
-      margin-right: 0;
-    }
-    &:hover {
-      border-bottom: 2px solid #3493f7;
-    }
+    margin-left: 10px;
+    border-radius: 50px;
   }
-  .active {
-    border-bottom: 2px solid #3493f7;
-  }
+
   .search-tab-filter {
     display: flex;
     margin-bottom: 33px;
