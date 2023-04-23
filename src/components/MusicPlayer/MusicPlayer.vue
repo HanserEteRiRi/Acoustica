@@ -6,6 +6,7 @@
       :src="currentMusic.url"
       @timeupdate="updateProgress"
       @loadedmetadata="setSliderMax"
+      @error="onAudioError"
       autoplay
     ></audio>
     <a-row class="inner-music-player">
@@ -27,7 +28,10 @@
         <div class="player-controls">
           <div class="player-controls-up">
             <!-- 上一首 -->
-            <step-backward-outlined class="control-icon" />
+            <step-backward-outlined
+              class="control-icon"
+              @click="handleStepBackward"
+            />
             <!-- 播放/暂停 -->
             <caret-right-outlined
               class="control-icon"
@@ -40,7 +44,10 @@
               v-show="isPlaying"
             />
             <!-- 下一首 -->
-            <step-forward-outlined class="control-icon" />
+            <step-forward-outlined
+              class="control-icon"
+              @click="handleStepForward"
+            />
           </div>
           <a-row type="flex" class="player-controls-down">
             <!-- 播放器进度条 -->
@@ -118,6 +125,7 @@ import {
 } from "@ant-design/icons-vue";
 import { useStore } from "vuex";
 import { Music } from "@/types/music";
+import { message } from "ant-design-vue";
 
 const store = useStore();
 console.log("store", store.state.currentMusic);
@@ -171,6 +179,12 @@ const finishPlay = computed(() => {
   );
 });
 
+const onAudioError = () => {
+  // console.log("onAudioError");
+  // store.dispatch("nextMusic");
+  message.error("播放失败,播放源可能已失效");
+};
+
 watchEffect(() => {
   if (finishPlay.value) {
     console.log("finishPlay");
@@ -188,6 +202,14 @@ function togglePlay() {
     isPlaying.value = !isPlaying.value;
   }
 }
+
+const handleStepBackward = () => {
+  store.dispatch("prevMusic");
+};
+
+const handleStepForward = () => {
+  store.dispatch("nextMusic");
+};
 
 const toggleVolume = () => {
   showVolume.value = !showVolume.value;

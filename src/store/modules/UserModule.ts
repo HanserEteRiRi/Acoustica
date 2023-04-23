@@ -4,16 +4,16 @@ import RootState from "@/store/types";
 //
 export interface UserState {
   isLoggedIn: boolean;
+  id: string;
   username: string;
   email: string;
   favorites: string[];
 }
 
 const user: Module<UserState, RootState> = {
-  namespaced: true,
-
   state: {
     isLoggedIn: false,
+    id: "",
     username: "",
     email: "",
     favorites: [],
@@ -22,12 +22,14 @@ const user: Module<UserState, RootState> = {
   mutations: {
     login(state, payload) {
       state.isLoggedIn = true;
+      state.id = payload.id;
       state.username = payload.username;
       state.email = payload.email;
     },
 
     logout(state) {
       state.isLoggedIn = false;
+      state.id = "";
       state.username = "";
       state.email = "";
       state.favorites = [];

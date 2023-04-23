@@ -32,8 +32,11 @@
 
 <script setup lang="ts">
 import { defineEmits, ref } from "vue";
+import { useStore } from "vuex";
 import LoginView from "@/views/LoginView/LoginView.vue";
 import { func } from "vue-types";
+
+const store = useStore();
 
 const avatarBgColor = "#f56a00";
 const avatarValue = "xcx";

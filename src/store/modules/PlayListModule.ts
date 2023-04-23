@@ -12,6 +12,7 @@ export interface PlayListState {
   count: number;
   currentIndex: number;
   playMode: number;
+  playHistory: Array<string>; //存储历史歌曲id
 }
 
 // play list module
@@ -21,6 +22,7 @@ const playList: Module<PlayListState, RootState> = {
     count: 0,
     currentIndex: 0,
     playMode: 0,
+    playHistory: [],
   },
   mutations: {
     setPlayList(state, payload) {
@@ -148,10 +150,37 @@ const playList: Module<PlayListState, RootState> = {
         // 播放列表为空,清空当前播放歌曲
         this.dispatch("removeCurrentMusic");
       } else {
+        state.playHistory.push(state.playList[state.currentIndex].id);
         this.dispatch("setCurrentMusic", {
           // 播放列表不为空，播放当前歌曲
           currentMusic: state.playList[state.currentIndex],
         });
+      }
+    },
+    prevMusic({ commit, state }) {
+      console.log("prevMusic", state.playHistory);
+      if (state.playHistory.length <= 1) {
+        // 没有上一首歌
+        return;
+      }
+
+      // 移除当前播放歌曲
+      // state.playHistory.pop();
+
+      // 获取上一首歌的id，并检查歌曲是否存在于播放列表中
+      const prevId = state.playHistory.pop();
+      if (prevId) {
+        const prevIndex = state.playList.findIndex(
+          (item) => item.id === prevId
+        );
+        // 如果找到了上一首歌
+        if (prevIndex !== -1) {
+          state.currentIndex = prevIndex;
+          commit("setCurrentIndex", { currentIndex: state.currentIndex });
+          this.dispatch("setCurrentMusic", {
+            currentMusic: state.playList[state.currentIndex],
+          });
+        }
       }
     },
   },
