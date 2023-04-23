@@ -5,6 +5,8 @@ import { Music } from "@/types/music";
 export interface CurrentMusicState {
   currentMusic: Music;
   hasMusic: boolean;
+  currentProgress: number; // 当前播放进度（秒）
+  sliderMax: number; // 滑块最大值（秒）
 }
 
 const currentMusic: Module<CurrentMusicState, RootState> = {
@@ -19,6 +21,8 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
       lyric: "",
     },
     hasMusic: false,
+    currentProgress: 0,
+    sliderMax: 0,
   },
   mutations: {
     setHasMusic(state, payload) {
@@ -26,7 +30,16 @@ const currentMusic: Module<CurrentMusicState, RootState> = {
     },
     setCurrentMusic(state, payload) {
       state.currentMusic = payload.currentMusic;
+      state.hasMusic = true;
+      state.currentProgress = 0;
+      state.sliderMax = 0.1; //初值设为0.1秒，防止当歌曲加载失败时，滑块位于进度条中间，且无法拖动
       // console.log("set CurrentMusic:", state.currentMusic);
+    },
+    setCurrentProgress(state, payload) {
+      state.currentProgress = payload.currentProgress;
+    },
+    setSliderMax(state, payload) {
+      state.sliderMax = payload.sliderMax;
     },
   },
   actions: {

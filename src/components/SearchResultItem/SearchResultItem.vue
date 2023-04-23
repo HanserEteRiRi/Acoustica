@@ -33,7 +33,7 @@ import { PlusOutlined, HeartOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { Music } from "@/types/music";
 import { ActionReasult } from "@/types/ActionReasult";
-import { computed } from "@vue/reactivity";
+import { computed } from "vue";
 
 const store = useStore();
 

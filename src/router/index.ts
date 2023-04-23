@@ -7,6 +7,7 @@ import Upload from "@/views/UploadView/UploadView.vue";
 import RankDetail from "@/views/RankDetailView/RankDetailView.vue";
 import SearchView from "@/views/SearchView/SearchView.vue";
 import SettingView from "@/views/SettingView/SettingView.vue";
+import MusicDetailView from "@/views/MusicDetailView/MusicDetailView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -38,7 +39,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "upload",
-        name: "Upload",
+        name: "upload",
         component: Upload,
       },
       {
@@ -50,6 +51,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "playback",
         name: "playback",
         component: SettingView,
+      },
+      {
+        path: "detail",
+        name: "detail",
+        component: MusicDetailView,
       },
     ],
   },

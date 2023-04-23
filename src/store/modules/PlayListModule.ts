@@ -2,6 +2,7 @@ import { Module } from "vuex";
 import RootState from "@/store/types";
 import { Music } from "@/types/music";
 import { ActionReasult } from "@/types/ActionReasult";
+import { message } from "ant-design-vue";
 
 interface PlayItem extends Music {
   isPlaying: boolean;
@@ -11,7 +12,7 @@ export interface PlayListState {
   playList: Array<PlayItem>;
   count: number;
   currentIndex: number;
-  playMode: number;
+  playMode: number; // 0:顺序播放 1:随机播放 2:单曲循环
   playHistory: Array<string>; //存储历史歌曲id
 }
 
@@ -40,6 +41,7 @@ const playList: Module<PlayListState, RootState> = {
     },
     clearPlayList(state) {
       state.playList = [];
+      state.playHistory = [];
     },
     deleteMusic(state, payload) {
       console.log("deleteMusic:", payload.music.name, payload.music.artist);
@@ -159,28 +161,38 @@ const playList: Module<PlayListState, RootState> = {
     },
     prevMusic({ commit, state }) {
       console.log("prevMusic", state.playHistory);
-      if (state.playHistory.length <= 1) {
-        // 没有上一首歌
-        return;
-      }
-
-      // 移除当前播放歌曲
-      // state.playHistory.pop();
-
-      // 获取上一首歌的id，并检查歌曲是否存在于播放列表中
-      const prevId = state.playHistory.pop();
-      if (prevId) {
-        const prevIndex = state.playList.findIndex(
-          (item) => item.id === prevId
-        );
-        // 如果找到了上一首歌
-        if (prevIndex !== -1) {
-          state.currentIndex = prevIndex;
-          commit("setCurrentIndex", { currentIndex: state.currentIndex });
-          this.dispatch("setCurrentMusic", {
-            currentMusic: state.playList[state.currentIndex],
-          });
+      if (state.playMode === 0) {
+        // 顺序播放
+        state.currentIndex--;
+        if (state.currentIndex < 0) {
+          state.currentIndex = state.playList.length - 1;
         }
+      } else if (state.playMode === 1) {
+        // 随机播放
+        if (state.playHistory.length <= 1) {
+          // 没有上一首歌
+          return;
+        }
+        // 移除当前播放歌曲
+        // state.playHistory.pop();
+        // 获取上一首歌的id，并检查歌曲是否存在于播放列表中
+        const prevId = state.playHistory.pop();
+        if (prevId) {
+          const prevIndex = state.playList.findIndex(
+            (item) => item.id === prevId
+          );
+          // 如果找到了上一首歌
+          if (prevIndex !== -1) {
+            state.currentIndex = prevIndex;
+            commit("setCurrentIndex", { currentIndex: state.currentIndex });
+            this.dispatch("setCurrentMusic", {
+              currentMusic: state.playList[state.currentIndex],
+            });
+          }
+        }
+      } else if (state.playMode === 2) {
+        // 单曲循环
+        return { success: false, message: "单曲循环" };
       }
     },
   },

@@ -15,6 +15,7 @@
           class="album-cover"
           :src="albumCover"
           alt="Album cover"
+          @click="handleClickImg"
           @error="onImageError"
         />
       </a-col>
@@ -114,6 +115,8 @@ import defaultAlbumCover from "@/assets/logo.png";
 import SetVolume from "./SetVolume/SetVolume.vue";
 import PlayList from "@/components/PlayList/PlayList.vue";
 
+import parseLrc from "@/utils/parseLrc";
+
 import {
   StepBackwardOutlined,
   CaretRightOutlined,
@@ -126,19 +129,24 @@ import {
 import { useStore } from "vuex";
 import { Music } from "@/types/music";
 import { message } from "ant-design-vue";
+import { useRouter } from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 console.log("store", store.state.currentMusic);
 
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isPlaying = ref(false);
-const currentProgress = ref(0);
-const sliderMax = ref(0);
 const showMenu = ref(false);
 const showVolume = ref(false);
 const albumCover = ref(defaultAlbumCover);
 
+const currentProgress = computed(
+  () => store.state.currentMusic.currentProgress
+); // 当前播放进度(秒)
+const sliderMax = computed(() => store.state.currentMusic.sliderMax); // 播放器进度条最大值(秒)
 const currentMusic = computed(() => store.state.currentMusic.currentMusic);
+
 watchEffect(() => {
   albumCover.value = currentMusic.value.cover;
 });
@@ -182,7 +190,11 @@ const finishPlay = computed(() => {
 const onAudioError = () => {
   // console.log("onAudioError");
   // store.dispatch("nextMusic");
-  message.error("播放失败,播放源可能已失效");
+  const musicTitle = currentMusic.value.title;
+  message.error(musicTitle + "播放失败,播放源可能已失效,即将播放下一首歌曲");
+  setTimeout(() => {
+    store.dispatch("nextMusic");
+  }, 3000);
 };
 
 watchEffect(() => {
@@ -202,6 +214,10 @@ function togglePlay() {
     isPlaying.value = !isPlaying.value;
   }
 }
+
+const handleClickImg = () => {
+  router.push("/detail");
+};
 
 const handleStepBackward = () => {
   store.dispatch("prevMusic");
@@ -229,9 +245,13 @@ function togglePlayMenu() {
   showMenu.value = !showMenu.value;
 }
 
+// audio播放进度改变时，更新进度条
 function updateProgress() {
   if (audioRef.value) {
-    currentProgress.value = audioRef.value.currentTime;
+    store.commit("setCurrentProgress", {
+      currentProgress: audioRef.value.currentTime,
+    });
+    // currentProgress.value = audioRef.value.currentTime;
     if (audioRef.value.currentTime === audioRef.value.duration) {
       isPlaying.value = false;
     }
@@ -240,10 +260,14 @@ function updateProgress() {
 
 function setSliderMax() {
   if (audioRef.value) {
-    sliderMax.value = audioRef.value.duration;
+    // sliderMax.value = audioRef.value.duration;
+    store.commit("setSliderMax", {
+      sliderMax: audioRef.value.duration,
+    });
   }
 }
 
+// 拖动进度条改变audio播放进度
 function seek(value: number) {
   if (audioRef.value) {
     audioRef.value.currentTime = value;
