@@ -131,4 +131,14 @@ p {
   margin: 0;
   color: #666;
 }
+
+@media (max-width: 768px) {
+  .left-section {
+    display: none;
+  }
+
+  .right-section {
+    flex: 1;
+  }
+}
 </style>

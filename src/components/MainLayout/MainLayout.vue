@@ -80,4 +80,10 @@ const collapsed = ref<boolean>(false);
 
 .bread-crumb {
 }
+
+@media (max-width: 768px) {
+  .layout-sider-wrapper {
+    display: none;
+  }
+}
 </style>
