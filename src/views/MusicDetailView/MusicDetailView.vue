@@ -115,6 +115,7 @@ const seekTo = (time: number) => {
 }
 
 img {
+  border-radius: 10%;
   max-width: 100%;
   height: auto;
 }
