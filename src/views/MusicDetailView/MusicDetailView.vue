@@ -9,8 +9,12 @@
       <div
         v-for="(line, index) in currentLyric"
         :key="index"
-        :class="{ 'current-line': isCurrentLine(index) }"
+        :class="{
+          'lyric-line': true,
+          'current-line': isCurrentLine(index),
+        }"
         ref="lyricLines"
+        @click="seekTo(line.time)"
       >
         <span>{{ line.text }}</span>
       </div>
@@ -27,9 +31,12 @@ import parseLrc from "@/utils/parseLrc";
 const store = useStore();
 
 const currentMusic = computed(() => store.state.currentMusic.currentMusic);
-const currentLyric = computed(() =>
-  parseLrc(store.state.currentMusic.currentMusic.lyric)
-);
+const currentLyric = computed(() => {
+  if (!store.state.currentMusic.currentMusic.lyric) {
+    return [];
+  }
+  return parseLrc(store.state.currentMusic.currentMusic.lyric);
+});
 const currentProgress = computed(
   () => store.state.currentMusic.currentProgress
 );
@@ -61,12 +68,17 @@ watch(currentProgress, () => {
     });
   }
 });
+
+const seekTo = (time: number) => {
+  store.commit("setCurrentProgress", { currentProgress: time / 1000 });
+};
 </script>
 
-<style scoped>
+<style scoped lang="less">
 .detail-container {
+  margin-top: 20px;
   display: flex;
-  height: 100%;
+  height: 85%;
 }
 
 .left-section {
@@ -82,16 +94,24 @@ watch(currentProgress, () => {
 
 .right-section {
   flex: 1;
-  margin-top: 10px;
-  height: 80vh; /* 设置固定高度 */
   padding: 20px;
   box-sizing: border-box;
-  overflow-y: auto; /* 允许垂直滚动 */
+  overflow-y: auto;
+}
+
+.lyric-line {
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+
+  &:hover {
+    color: #666;
+  }
 }
 
 .current-line {
   font-weight: bold;
-  color: #f00;
+  color: #6777ef;
 }
 
 img {
@@ -100,10 +120,14 @@ img {
 }
 
 h2 {
-  margin: 20px 0 10px;
+  margin-top: 5px;
+  margin-bottom: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 p {
   margin: 0;
+  color: #666;
 }
 </style>

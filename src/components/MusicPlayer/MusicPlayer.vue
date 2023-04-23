@@ -115,8 +115,6 @@ import defaultAlbumCover from "@/assets/logo.png";
 import SetVolume from "./SetVolume/SetVolume.vue";
 import PlayList from "@/components/PlayList/PlayList.vue";
 
-import parseLrc from "@/utils/parseLrc";
-
 import {
   StepBackwardOutlined,
   CaretRightOutlined,
@@ -153,8 +151,8 @@ watchEffect(() => {
 
 watchEffect(() => {
   console.log("on currentMusic change");
-  const music = currentMusic.value;
-  isPlaying.value = true;
+  // const music = currentMusic.value;
+  if (currentMusic.value) isPlaying.value = true;
 });
 
 const onImageError = () => {
@@ -227,10 +225,6 @@ const handleStepForward = () => {
   store.dispatch("nextMusic");
 };
 
-const toggleVolume = () => {
-  showVolume.value = !showVolume.value;
-};
-
 function handleVolumeChange(value: number) {
   if (audioRef.value) {
     audioRef.value.volume = value / 100;
@@ -273,6 +267,13 @@ function seek(value: number) {
     audioRef.value.currentTime = value;
   }
 }
+
+// 监听currentProgress的变化，改变audio的播放进度
+watchEffect(() => {
+  if (audioRef.value) {
+    audioRef.value.currentTime = currentProgress.value;
+  }
+});
 
 // 在组件挂载时，为audio元素添加事件监听器
 onMounted(() => {
