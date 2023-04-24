@@ -18,7 +18,7 @@
         <UserOutlined />
         <span>上传</span>
       </a-menu-item>
-      <a-menu-item key="/setting" @click="handleMenuClick('/playback')">
+      <a-menu-item key="/setting" @click="handleMenuClick('/setting')">
         <FileOutlined />
         <span>设置</span>
       </a-menu-item>
@@ -51,12 +51,26 @@ function handleMenuClick(path: RouteLocationNormalizedLoaded["path"]) {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .logo {
   color: #fff;
   font-size: 18px;
   float: left;
   margin-right: 32px;
   line-height: 64px;
+}
+
+::v-deep .ant-menu-item-selected {
+  background-color: #6777ef !important;
+  margin: 0 2px;
+  border-radius: 5px;
+
+  span {
+    color: #fff;
+  }
+
+  svg {
+    fill: #fff;
+  }
 }
 </style>

@@ -3,10 +3,11 @@
     <header class="primary-content">
       <div class="introduction-text">
         <!-- 在这里放置左侧头部内容 -->
+        Setting
       </div>
       <div class="header-right">
         <!-- 在这里放置右侧头部内容 -->
-        <img src="@/assets/setting.svg" alt="setting logo" />
+        <!-- <img src="@/assets/setting.svg" alt="setting logo" /> -->
       </div>
     </header>
     <main class="main">
@@ -15,7 +16,9 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useStore } from "vuex";
+</script>
 
 <style scoped>
 .container {

@@ -48,8 +48,8 @@ const routes: Array<RouteRecordRaw> = [
         component: SearchView,
       },
       {
-        path: "playback",
-        name: "playback",
+        path: "setting",
+        name: "setting",
         component: SettingView,
       },
       {

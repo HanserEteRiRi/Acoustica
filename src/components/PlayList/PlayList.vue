@@ -1,7 +1,8 @@
 <template>
   <div>
     <a-drawer
-      :width="500"
+      :width="drawerWidth"
+      class="music-list-drawer"
       :title="'播放列表 (' + musicCount + ')'"
       :placement="placement"
       :visible="props.visible"
@@ -57,9 +58,16 @@ const hasMusic = computed(() => store.getters.playList.length > 0);
 const musicCount = computed(() => store.getters.playList.length);
 const localPlayList = ref(store.getters.playList);
 
+const drawerWidth = computed(() => {
+  if (window.innerWidth > 768) {
+    return 500;
+  } else {
+    return window.innerWidth;
+  }
+});
+
 watchEffect(() => {
   localPlayList.value = store.getters.playList;
-  // console.log("localPlayList", localPlayList.value);
 });
 
 const onClose = () => {
@@ -83,6 +91,9 @@ const onDragEnd = (event: DragEvent) => {
 </script>
 
 <style scoped lang="less">
+.music-list-drawer {
+  width: 500px !important;
+}
 .music-list {
   height: 100%;
   overflow-y: auto;
@@ -93,5 +104,11 @@ const onDragEnd = (event: DragEvent) => {
   justify-content: space-between;
   color: #3a3a3a;
   font-size: 15px;
+}
+
+@media screen and (max-width: 768px) {
+  .music-list-drawer {
+    // width: 250px !important;
+  }
 }
 </style>

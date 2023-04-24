@@ -31,6 +31,7 @@ import parseLrc from "@/utils/parseLrc";
 const store = useStore();
 
 const currentMusic = computed(() => store.state.currentMusic.currentMusic);
+const hasLyric = computed(() => !!currentMusic.value.lyric);
 const currentLyric = computed(() => {
   if (!store.state.currentMusic.currentMusic.lyric) {
     return [];
@@ -41,9 +42,10 @@ const currentProgress = computed(
   () => store.state.currentMusic.currentProgress
 );
 
-const rightSection = ref(null);
-const lyricLines = ref([]);
+const rightSection = ref<HTMLElement | null>(null);
+const lyricLines = ref<Array<HTMLElement>>([]);
 
+//判断当前播放歌词行
 const isCurrentLine = (index: number) => {
   if (index === 0) {
     return currentProgress.value * 1000 < currentLyric.value[index].time;
@@ -56,19 +58,23 @@ const isCurrentLine = (index: number) => {
     );
   }
 };
-
+//当前行居中
 watch(currentProgress, () => {
   const currentIndex = currentLyric.value.findIndex((line, index) =>
     isCurrentLine(index)
   );
-  if (currentIndex !== -1 && lyricLines.value[currentIndex]) {
+  if (
+    lyricLines.value &&
+    currentIndex !== -1 &&
+    lyricLines.value[currentIndex]
+  ) {
     lyricLines.value[currentIndex].scrollIntoView({
       block: "center",
       behavior: "smooth",
     });
   }
 });
-
+// 点击歌词跳转进度
 const seekTo = (time: number) => {
   store.commit("setCurrentProgress", { currentProgress: time / 1000 });
 };

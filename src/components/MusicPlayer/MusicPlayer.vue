@@ -21,7 +21,9 @@
       </a-col>
       <a-col :span="4" style="height: 100%">
         <div class="song-info">
-          <div class="song-title">{{ currentMusic.title }}</div>
+          <div class="song-title" @click="handleClickImg">
+            {{ currentMusic.title }}
+          </div>
           <div class="song-artist">{{ currentMusic.artist }}</div>
         </div>
       </a-col>
@@ -53,7 +55,7 @@
           <a-row type="flex" class="player-controls-down">
             <!-- 播放器进度条 -->
             <a-col
-              flex="35px"
+              :flex="timeFlex"
               style="
                 display: flex;
                 align-items: center;
@@ -74,7 +76,7 @@
               ></a-slider>
             </a-col>
             <a-col
-              flex="35px"
+              :flex="timeFlex"
               style="
                 display: flex;
                 align-items: center;
@@ -89,7 +91,7 @@
       <a-col :span="3" style="height: 100%">
         <div class="player-left">
           <!-- <sound-outlined class="control-icon-left" @click="toggleVolume" /> -->
-          <SetVolume @volume-change="handleVolumeChange" />
+          <SetVolume class="set-volume" @volume-change="handleVolumeChange" />
           <menu-fold-outlined
             class="control-icon-left"
             @click="togglePlayMenu"
@@ -109,7 +111,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed, watchEffect } from "vue";
+import {
+  getCurrentInstance,
+  ref,
+  onMounted,
+  onUnmounted,
+  computed,
+  watchEffect,
+} from "vue";
 
 import defaultAlbumCover from "@/assets/logo.png";
 import SetVolume from "./SetVolume/SetVolume.vue";
@@ -131,8 +140,7 @@ import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
-console.log("store", store.state.currentMusic);
-
+const { proxy } = getCurrentInstance();
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isPlaying = ref(false);
 const showMenu = ref(false);
@@ -144,6 +152,11 @@ const currentProgress = computed(
 ); // 当前播放进度(秒)
 const sliderMax = computed(() => store.state.currentMusic.sliderMax); // 播放器进度条最大值(秒)
 const currentMusic = computed(() => store.state.currentMusic.currentMusic);
+const timeFlex = computed(() => {
+  console.log("timeFlex", proxy.$device);
+  if (proxy.$device === "mobile") return "0px";
+  else return "35px";
+});
 
 watchEffect(() => {
   albumCover.value = currentMusic.value.cover;
@@ -179,6 +192,7 @@ const duration = computed(() => {
   return `${minutes}:${seconds}`;
 });
 
+// 是否完成播放
 const finishPlay = computed(() => {
   return (
     currentProgress.value != 0 && currentProgress.value === sliderMax.value
@@ -340,6 +354,7 @@ onUnmounted(() => {
 }
 
 .song-title {
+  cursor: pointer;
   font-size: 14px;
   font-weight: bolder;
 }
@@ -432,5 +447,63 @@ onUnmounted(() => {
 .slider {
   margin-top: 3px;
   margin-bottom: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .music-player {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+  }
+
+  .album-cover {
+    width: 40px;
+    height: 40px;
+    display: none;
+  }
+
+  .song-info {
+    padding-left: 5px;
+  }
+
+  .song-title {
+    font-size: 12px;
+  }
+
+  .song-artist {
+    font-size: 6px;
+  }
+
+  .player-controls {
+    padding-left: 5px;
+  }
+
+  .control-icon {
+    font-size: 20px;
+  }
+
+  .player-left {
+    padding-left: 5px;
+    .set-volume {
+      display: none;
+    }
+  }
+
+  .control-icon-left {
+    font-size: 16px;
+  }
+
+  .player-controls-up {
+    height: 15px;
+  }
+
+  .current-time {
+    font-size: 8px;
+  }
+
+  .duration {
+    font-size: 8px;
+  }
 }
 </style>

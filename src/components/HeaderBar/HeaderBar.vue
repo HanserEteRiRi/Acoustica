@@ -1,7 +1,9 @@
 <template>
   <a-layout-header class="layout-header">
     <div class="inner-layout-header">
-      <div class="menu"></div>
+      <div class="menu" @click="handleClickMenu">
+        <unordered-list-outlined />
+      </div>
       <div class="header-left">
         <div class="logo">Acoustica</div>
       </div>
@@ -34,7 +36,7 @@
 import { defineEmits, ref } from "vue";
 import { useStore } from "vuex";
 import LoginView from "@/views/LoginView/LoginView.vue";
-import { func } from "vue-types";
+import { UnorderedListOutlined } from "@ant-design/icons-vue";
 
 const store = useStore();
 
@@ -43,18 +45,22 @@ const avatarValue = "xcx";
 const emit = defineEmits(["toggleSider"]);
 const showLogin = ref<boolean>(false);
 
-function toggleSider() {
+const toggleSider = () => {
   emit("toggleSider");
-}
-function handleClickAvatar() {
+};
+const handleClickAvatar = () => {
   showLogin.value = true;
-}
-function handleLogin() {
+};
+const handleLogin = () => {
   showLogin.value = false;
-}
-function handleCancel() {
+};
+const handleCancel = () => {
   showLogin.value = false;
-}
+};
+
+const handleClickMenu = () => {
+  toggleSider();
+};
 </script>
 
 <style scoped lang="less">
@@ -74,6 +80,10 @@ function handleCancel() {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.menu {
+  display: none;
+}
+
 .inner-layout-header {
   display: flex;
   justify-content: space-between; // 左右分布
@@ -88,6 +98,23 @@ function handleCancel() {
 
   :hover .avatar {
     transform: scale(1.2);
+  }
+}
+
+@media (max-width: 768px) {
+  .menu {
+    display: block;
+    font-size: 24px;
+    color: #414142;
+    cursor: pointer;
+  }
+  .layout-header {
+    padding-left: 10px;
+  }
+  .inner-layout-header {
+    .header-left {
+      text-align: center;
+    }
   }
 }
 </style>
