@@ -40,7 +40,7 @@ import VideoList from "@/components/VideoList/VideoList.vue";
 import TheBottom from "@/components/TheBottom/TheBottom.vue";
 import SearchInput from "@/components/SearchInput/SearchInput.vue";
 // import defaultAlbumCover from "@/assets/cover.jpg";
-import { Music } from "@/types/music";
+import { Music } from "@/types/Music";
 import { Services } from "@/services";
 
 const store = useStore();
@@ -49,7 +49,7 @@ const route = useRoute();
 const services: Services = inject<Services>("services");
 const searchValue = ref<string>(route.query.keywords as string);
 const isLoading = ref<boolean>(false);
-const searchResults = ref<any[]>([]);
+const searchResults = ref<Music[]>([]);
 const tabList = ["音乐", "视频"];
 
 const isMusicTab = computed(() => {

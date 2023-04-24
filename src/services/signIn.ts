@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import { Music } from "../types/music";
+import { Music } from "../types/Music";
 import { hashID } from "../utils/hashID";
 
 export const signIn = async (

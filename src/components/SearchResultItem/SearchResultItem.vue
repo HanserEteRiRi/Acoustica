@@ -1,5 +1,5 @@
 <template>
-  <div class="outer-music-item">
+  <div class="outer-music-item" ref="imageRef">
     <div class="music-item" @dblclick="handleDoubleClick">
       <a-row>
         <a-col :span="1"> </a-col>
@@ -9,7 +9,7 @@
         <a-col :span="8" class="music-item-left">
           <a-avatar
             class="music-avatar"
-            :src="props.music.cover"
+            :src="isVisible ? props.music.cover : null"
             size="large"
           ></a-avatar>
           <span class="item-title">{{ props.music.title }}</span>
@@ -27,11 +27,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { defineProps, onMounted, onUnmounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { PlusOutlined, HeartOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
-import { Music } from "@/types/music";
+import { Music } from "@/types/Music";
 import { ActionReasult } from "@/types/ActionReasult";
 import { computed } from "vue";
 
@@ -53,6 +53,33 @@ const music = computed(() => {
     ...props.music,
   };
 });
+const isVisible = ref(false);
+const imageRef = ref(null);
+
+// 图片懒加载
+watch(
+  () => imageRef.value,
+  (newImageRef, oldImageRef) => {
+    if (newImageRef && newImageRef !== oldImageRef) {
+      const observerCallback = (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            isVisible.value = true;
+            observer.unobserve(entry.target);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(observerCallback, {
+        rootMargin: "0px",
+        threshold: 0.1,
+      });
+
+      observer.observe(newImageRef);
+    }
+  },
+  { immediate: true }
+);
 
 const handleDoubleClick = () => {
   store.dispatch("setCurrentMusic", {

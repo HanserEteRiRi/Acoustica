@@ -10,6 +10,7 @@ import "ant-design-vue/dist/antd.css";
 import "./assets/global.less";
 import services from "./services";
 import device from "./plugins/device";
+import lazyLoad from "./directives/lazyLoad";
 
 const app = createApp(App);
 
@@ -20,5 +21,6 @@ app.use(Antd);
 app.component("VueDraggable", draggable);
 app.use(StarPlugin, { store });
 app.provide("services", services);
+app.directive("lazy-load", lazyLoad);
 
 app.mount("#app");

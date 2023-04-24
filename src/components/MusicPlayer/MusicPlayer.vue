@@ -27,7 +27,7 @@
           <div class="song-artist">{{ currentMusic.artist }}</div>
         </div>
       </a-col>
-      <a-col :span="15" style="height: 100%">
+      <a-col :span="playerControlSpan" style="height: 100%">
         <div class="player-controls">
           <div class="player-controls-up">
             <!-- 上一首 -->
@@ -118,6 +118,7 @@ import {
   onUnmounted,
   computed,
   watchEffect,
+  ComponentInternalInstance,
 } from "vue";
 
 import defaultAlbumCover from "@/assets/logo.png";
@@ -134,17 +135,15 @@ import {
   CloudDownloadOutlined,
 } from "@ant-design/icons-vue";
 import { useStore } from "vuex";
-import { Music } from "@/types/music";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
 const store = useStore();
 const router = useRouter();
-const { proxy } = getCurrentInstance();
+const { proxy } = getCurrentInstance() as ComponentInternalInstance;
 const audioRef = ref<HTMLAudioElement | null>(null);
 const isPlaying = ref(false);
 const showMenu = ref(false);
-const showVolume = ref(false);
 const albumCover = ref(defaultAlbumCover);
 
 const currentProgress = computed(
@@ -153,9 +152,13 @@ const currentProgress = computed(
 const sliderMax = computed(() => store.state.currentMusic.sliderMax); // 播放器进度条最大值(秒)
 const currentMusic = computed(() => store.state.currentMusic.currentMusic);
 const timeFlex = computed(() => {
-  console.log("timeFlex", proxy.$device);
+  console.log("device", proxy.$device);
   if (proxy.$device === "mobile") return "0px";
   else return "35px";
+});
+const playerControlSpan = computed(() => {
+  if (proxy.$device === "mobile") return 12;
+  else return 14;
 });
 
 watchEffect(() => {
@@ -216,7 +219,7 @@ watchEffect(() => {
   }
 });
 
-function togglePlay() {
+const togglePlay = () => {
   if (audioRef.value) {
     if (isPlaying.value) {
       audioRef.value.pause();
@@ -225,7 +228,7 @@ function togglePlay() {
     }
     isPlaying.value = !isPlaying.value;
   }
-}
+};
 
 const handleClickImg = () => {
   router.push("/detail");
@@ -414,9 +417,6 @@ onUnmounted(() => {
 }
 
 .player-controls-down {
-  // align-items: center;
-  // display: flex;
-  // flex-direction: row;
   width: 100%;
 }
 
@@ -460,7 +460,7 @@ onUnmounted(() => {
   .album-cover {
     width: 40px;
     height: 40px;
-    display: none;
+    // display: none;
   }
 
   .song-info {

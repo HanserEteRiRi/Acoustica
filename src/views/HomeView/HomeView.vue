@@ -2,18 +2,14 @@
   <div class="home">
     <!-- <img alt="Vue logo" src="../../assets/logo.png" /> -->
     <div class="header">
-      <SearchInput />
+      <div>
+        <SearchInput />
+      </div>
+      <div class="header-card"></div>
     </div>
 
-    <div class="charts">
-      <a-typography>
-        <a-typography-title>排行榜</a-typography-title>
-        <a-typography-paragraph>
-          <!-- 你可以在这里上传你的歌曲，也可以在这里查看已经上传的歌曲和其他人上传的歌曲。 -->
-        </a-typography-paragraph>
-      </a-typography>
-      <div class="charts-container">
-        <!-- <div class="charts-card">
+    <div class="charts" ref="scrollContainer">
+      <!-- <div class="charts-card">
           <img :src="chinaChartsCover" alt="中国榜" />
         </div>
         <div class="charts-card">
@@ -25,46 +21,131 @@
         <div class="charts-card">
           <img :src="globalChartsCover" alt="全球榜" />
         </div> -->
+      <div class="ranking-list">
+        <MusicCard
+          v-for="(result, index) in rankinglist[1]"
+          :key="index"
+          :music="result"
+          class="music-card"
+        ></MusicCard>
+      </div>
+      <div class="ranking-list">
+        <MusicCard
+          v-for="(result, index) in rankinglist[2]"
+          :key="index"
+          :music="result"
+          class="music-card"
+        ></MusicCard>
+      </div>
+      <div class="ranking-list">
+        <MusicCard
+          v-for="(result, index) in rankinglist[3]"
+          :key="index"
+          :music="result"
+          class="music-card"
+        ></MusicCard>
+      </div>
+      <div class="ranking-list">
+        <MusicCard
+          v-for="(result, index) in rankinglist[4]"
+          :key="index"
+          :music="result"
+          class="music-card"
+        ></MusicCard>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { inject, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import SearchInput from "@/components/SearchInput/SearchInput.vue";
+import MusicCard from "@/components/MusicCard/MusicCard.vue";
+import { Services } from "@/services";
 import defaultAlbumCover from "@/assets/cover.jpg";
 import chinaChartsCover from "@/assets/charts/china.png";
 import englishChartsCover from "@/assets/charts/english.png";
 import japanChartsCover from "@/assets/charts/japan.png";
 import globalChartsCover from "@/assets/charts/global.png";
+import { Music } from "@/types/Music";
 
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const services: Services = inject<Services>("services");
 
-const searchValue = ref<string>("");
-const isLoading = ref<boolean>(false);
+const rankinglist = ref<Music[][]>([]);
+const scrollContainer = ref<HTMLElement | null>(null);
 
-// 处理搜索
-function handleSearch(value: string | undefined, event: Event) {
-  store.commit("menu/setSelectedKeys", [""]);
-  router.push({
-    path: "/search",
-    query: {
-      keywords: value,
-    },
+onMounted(() => {
+  services.getRankinglist("1").then((res) => {
+    rankinglist.value[1] = res;
+    console.log(res);
   });
-}
+  services.getRankinglist("2").then((res) => {
+    rankinglist.value[2] = res;
+    console.log(res);
+  });
+  services.getRankinglist("3").then((res) => {
+    rankinglist.value[3] = res;
+    console.log(res);
+  });
+  services.getRankinglist("4").then((res) => {
+    rankinglist.value[4] = res;
+    console.log(res);
+  });
+});
 
-// 处理搜索框字符串变动
-function handleInput(event: Event) {
-  const target = event.target as HTMLInputElement;
-  if (!target) return;
-  console.log("输入值为：", target.value);
-}
+onMounted(() => {
+  const container = scrollContainer.value;
+
+  if (!container) {
+    return;
+  }
+
+  let isMouseDown = false;
+  let startX = 0;
+  let scrollLeft = 0;
+
+  const onMouseDown = (e: MouseEvent) => {
+    isMouseDown = true;
+    container.style.cursor = "grabbing";
+    startX = e.pageX - container.offsetLeft;
+    scrollLeft = container.scrollLeft;
+  };
+
+  const onMouseLeave = () => {
+    isMouseDown = false;
+    container.style.cursor = "grab";
+  };
+
+  const onMouseUp = () => {
+    isMouseDown = false;
+    container.style.cursor = "grab";
+  };
+
+  const onMouseMove = (e: MouseEvent) => {
+    if (!isMouseDown) return;
+    e.preventDefault();
+    const x = e.pageX - container.offsetLeft;
+    const scroll = (x - startX) * 2;
+    container.scrollLeft = scrollLeft - scroll;
+  };
+
+  container.addEventListener("mousedown", onMouseDown);
+  container.addEventListener("mouseleave", onMouseLeave);
+  container.addEventListener("mouseup", onMouseUp);
+  container.addEventListener("mousemove", onMouseMove);
+
+  return () => {
+    container.removeEventListener("mousedown", onMouseDown);
+    container.removeEventListener("mouseleave", onMouseLeave);
+    container.removeEventListener("mouseup", onMouseUp);
+    container.removeEventListener("mousemove", onMouseMove);
+  };
+});
 </script>
 
 <style lang="less" scoped>
@@ -80,30 +161,21 @@ function handleInput(event: Event) {
 }
 
 .header {
+  display: flex;
   margin-bottom: 60px;
+  .header-card {
+    width: 400px;
+    height: 250px;
+    background: linear-gradient(45deg, #9db5ce, rgb(182, 182, 223));
+    border-radius: 10px;
+    border: #2c3e50;
+  }
 }
 
 .charts {
-  margin-top: 60px;
-  margin: 60px 60px;
+  margin-top: 20px;
+  margin: 20px 20px;
   text-align: left;
-}
-
-.charts-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  padding: 20px;
-  overflow: hidden;
-}
-
-.charts-card {
-  position: relative;
-  background-color: #f1f1f1;
-  padding: 20px;
-  text-align: center;
-  font-size: 24px;
-  height: 200px;
 }
 
 .card::before {
@@ -124,6 +196,21 @@ function handleInput(event: Event) {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.ranking-list {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  width: 1000px;
+  height: 400px;
+  .music-card {
+    padding: 20px;
+    margin-right: 10px;
+    text-align: center;
+    white-space: normal;
+    flex: none;
+  }
 }
 
 @media screen and (max-width: 800px) {

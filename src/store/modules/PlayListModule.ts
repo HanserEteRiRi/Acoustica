@@ -1,6 +1,6 @@
 import { Module } from "vuex";
 import RootState from "@/store/types";
-import { Music } from "@/types/music";
+import { Music } from "@/types/Music";
 import { ActionReasult } from "@/types/ActionReasult";
 import { message } from "ant-design-vue";
 

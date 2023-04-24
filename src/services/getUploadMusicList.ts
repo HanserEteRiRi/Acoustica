@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import { Music } from "../types/music";
+import { Music } from "../types/Music";
 import { hashID } from "../utils/hashID";
 
 const host = "http://43.138.199.62:3000";

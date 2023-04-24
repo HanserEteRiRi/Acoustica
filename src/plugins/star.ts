@@ -2,7 +2,7 @@
 import { App } from "vue";
 import { Store } from "vuex";
 import RootState from "@/store/types";
-import { Music } from "@/types/music";
+import { Music } from "@/types/Music";
 
 interface StarPluginOptions {
   store: Store<RootState>;

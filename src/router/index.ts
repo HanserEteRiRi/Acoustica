@@ -1,13 +1,16 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import MainLayout from "@/components/MainLayout/MainLayout.vue";
-import HomeView from "../views/HomeView/HomeView.vue";
-import Charts from "@/views/ChartsView/ChartsView.vue";
-import Community from "@/views/CommunityView/CommunityView.vue";
-import Upload from "@/views/UploadView/UploadView.vue";
-import RankDetail from "@/views/RankDetailView/RankDetailView.vue";
-import SearchView from "@/views/SearchView/SearchView.vue";
-import SettingView from "@/views/SettingView/SettingView.vue";
-import MusicDetailView from "@/views/MusicDetailView/MusicDetailView.vue";
+
+// lazy load
+const MainLayout = () => import("@/components/MainLayout/MainLayout.vue");
+const HomeView = () => import("../views/HomeView/HomeView.vue");
+const Charts = () => import("@/views/ChartsView/ChartsView.vue");
+const Community = () => import("@/views/CommunityView/CommunityView.vue");
+const Upload = () => import("@/views/UploadView/UploadView.vue");
+const RankDetail = () => import("@/views/RankDetailView/RankDetailView.vue");
+const SearchView = () => import("@/views/SearchView/SearchView.vue");
+const SettingView = () => import("@/views/SettingView/SettingView.vue");
+const MusicDetailView = () =>
+  import("@/views/MusicDetailView/MusicDetailView.vue");
 
 const routes: Array<RouteRecordRaw> = [
   {

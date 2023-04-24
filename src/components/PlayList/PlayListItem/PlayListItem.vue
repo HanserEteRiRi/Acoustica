@@ -24,7 +24,7 @@
 import { ComputedRef, computed, defineProps } from "vue";
 import { useStore } from "vuex";
 import { CloseOutlined, HeartOutlined } from "@ant-design/icons-vue";
-import { Music } from "@/types/music";
+import { Music } from "@/types/Music";
 
 const store = useStore();
 
