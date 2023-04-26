@@ -2,7 +2,10 @@
   <div class="home">
     <!-- <img alt="Vue logo" src="../../assets/logo.png" /> -->
     <div class="header">
-      <div>
+      <div class="header-search">
+        <div class="header-search-text">
+          <span>搜索</span>
+        </div>
         <SearchInput />
       </div>
       <div class="header-card"></div>
@@ -163,6 +166,16 @@ onMounted(() => {
 .header {
   display: flex;
   margin-bottom: 60px;
+  .header-search {
+    text-align: left;
+    margin: 0 auto;
+    margin-top: 48px;
+    .header-search-text {
+      font-size: 40px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  }
   .header-card {
     width: 400px;
     height: 250px;

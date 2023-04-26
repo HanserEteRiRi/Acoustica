@@ -1,5 +1,5 @@
 <template>
-  <div class="music-card">
+  <div class="music-card" @click="handleDoubleClick">
     <div
       class="music-thumbnail"
       :style="`background-image: url(${music.cover})`"
@@ -13,11 +13,21 @@
 
 <script lang="ts" setup>
 import { defineProps } from "vue";
+import { useStore } from "vuex";
 import { Music } from "@/types/Music"; // Make sure to update this import path to match your project structure
 
+const store = useStore();
 const props = defineProps<{
   music: Music;
 }>();
+
+const handleDoubleClick = () => {
+  store.dispatch("setCurrentMusic", {
+    currentMusic: {
+      ...props.music,
+    },
+  });
+};
 </script>
 
 <style scoped lang="less">
@@ -47,7 +57,9 @@ const props = defineProps<{
 
   .music-info {
     padding: 8px;
-
+    overflow: hidden;
+    white-space: nowrap;
+    width: 100%;
     .music-title {
       font-weight: bold;
       white-space: nowrap;
