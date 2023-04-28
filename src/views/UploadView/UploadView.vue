@@ -13,8 +13,7 @@
           <a-upload-dragger
             v-model:fileList="fileList"
             name="file"
-            :multiple="true"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            :multiple="false"
             @change="handleChange"
             @drop="handleDrop"
           >
@@ -29,6 +28,9 @@
               uploading company data or other band files
             </p>
           </a-upload-dragger>
+          <div class="button-container">
+            <a-button @click="handleUpload">确认上传</a-button>
+          </div>
         </div>
       </div>
       <div class="card your-songs-card">
@@ -56,6 +58,7 @@ import { defineEmits, defineProps, ref } from "vue";
 import { InboxOutlined } from "@ant-design/icons-vue";
 import type { UploadChangeParam } from "ant-design-vue";
 import { message } from "ant-design-vue";
+import axios from "axios";
 
 const fileList = ref([]);
 const hasMusicUser = ref(false);
@@ -75,6 +78,35 @@ const handleChange = (info: UploadChangeParam) => {
 
 const handleDrop = (e: DragEvent) => {
   console.log("Dropped files", e.dataTransfer?.files);
+};
+
+const handleUpload = async () => {
+  if (!fileList.value.length) {
+    console.log("没有文件要上传");
+    return;
+  }
+
+  const formData = new FormData();
+
+  fileList.value.forEach((file) => {
+    if (!file.type.startsWith("audio/")) {
+      message.error(`仅支持上传音频文件: ${file.name}`);
+      return;
+    }
+    formData.append("file", file);
+  });
+
+  try {
+    const response = await axios.post("/api/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    console.log("上传成功:", response.data);
+  } catch (error) {
+    console.error("上传失败:", error);
+  }
 };
 </script>
 
@@ -110,6 +142,11 @@ const handleDrop = (e: DragEvent) => {
 .others-songs-card {
   width: 100%;
   height: 1000px;
+}
+
+.button-container {
+  margin-top: 10px;
+  text-align: right;
 }
 
 /* 当屏幕宽度大于等于768px时 */

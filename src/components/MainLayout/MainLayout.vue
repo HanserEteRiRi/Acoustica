@@ -22,9 +22,10 @@
             </div>
             <router-view></router-view>
           </a-layout-content>
-          <!-- <div class="music-player-wrapper"> -->
+
           <MusicPlayer />
-          <!-- </div> -->
+
+          <LeftSiderBar />
         </a-layout>
       </a-layout>
     </a-layout>
@@ -36,7 +37,8 @@ import { ref } from "vue";
 import HeaderBar from "@/components/HeaderBar/HeaderBar.vue";
 import SiderBar from "@/components/SiderBar/SiderBar.vue";
 // import BreadCrumb from "@/components/BreadCrumb/BreadCrumb.vue";
-import MusicPlayer from "../MusicPlayer/MusicPlayer.vue";
+import MusicPlayer from "@/components/MusicPlayer/MusicPlayer.vue";
+import LeftSiderBar from "@/components/LeftSiderBar/LeftSiderBar.vue";
 
 const collapsed = ref<boolean>(false);
 </script>
