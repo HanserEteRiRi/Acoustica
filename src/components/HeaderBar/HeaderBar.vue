@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineEmits, ref } from "vue";
+import { computed, defineEmits, ref } from "vue";
 import { useStore } from "vuex";
 import LoginView from "@/views/LoginView/LoginView.vue";
 import { UnorderedListOutlined } from "@ant-design/icons-vue";
@@ -41,7 +41,7 @@ import { UnorderedListOutlined } from "@ant-design/icons-vue";
 const store = useStore();
 
 const avatarBgColor = "#f56a00";
-const avatarValue = "xcx";
+const avatarValue = computed(() => store.state.user.username);
 const emit = defineEmits(["toggleSider"]);
 const showLogin = ref<boolean>(false);
 

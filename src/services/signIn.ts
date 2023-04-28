@@ -8,7 +8,7 @@ export const signIn = async (
   type: string // register or login
 ): Promise<any> => {
   try {
-    const response = await apiClient.post("/search", {
+    const response = await apiClient.post("/sign-in", {
       name: name,
       pwd: pwd,
       type: type,

@@ -8,15 +8,17 @@ export interface UserState {
   username: string;
   email: string;
   favorites: string[];
+  token: string;
 }
 
 const user: Module<UserState, RootState> = {
   state: {
     isLoggedIn: false,
-    id: "",
-    username: "",
+    id: "000",
+    username: "faefa",
     email: "",
     favorites: [],
+    token: "",
   },
 
   mutations: {
@@ -26,21 +28,15 @@ const user: Module<UserState, RootState> = {
       state.username = payload.username;
       state.email = payload.email;
     },
-
     logout(state) {
       state.isLoggedIn = false;
       state.id = "";
-      state.username = "";
+      state.username = "未登录";
       state.email = "";
       state.favorites = [];
     },
-
-    addFavorite(state, payload) {
-      state.favorites.push(payload.songId);
-    },
-
-    removeFavorite(state, payload) {
-      state.favorites = state.favorites.filter((id) => id !== payload.songId);
+    setToken(state, payload) {
+      state.token = payload.token;
     },
   },
 
@@ -55,18 +51,6 @@ const user: Module<UserState, RootState> = {
       // 实现退出逻辑
       // ...
       commit("logout");
-    },
-
-    addFavorite({ commit }, payload) {
-      // 将歌曲添加到收藏列表
-      // ...
-      commit("addFavorite", payload);
-    },
-
-    removeFavorite({ commit }, payload) {
-      // 将歌曲从收藏列表中删除
-      // ...
-      commit("removeFavorite", payload);
     },
   },
 

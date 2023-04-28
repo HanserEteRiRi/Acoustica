@@ -34,6 +34,7 @@
           @click="handleLogin('login')"
           >登录</a-button
         >
+        <a-button @click="handleLogout">注销</a-button>
       </a-form>
     </a-modal>
   </div>
@@ -54,7 +55,7 @@ const emit = defineEmits<{
   (event: "login", ...args: any[]): void;
   (event: "cancel", ...args: any[]): void;
 }>();
-
+const store = useStore();
 const visible = ref<boolean>(props.visible);
 const confirmLoading = ref<boolean>(false);
 const modalText = ref<string>("Content of the modal");
@@ -89,13 +90,18 @@ const handleLogin = async (type: string) => {
   modalText.value = "The modal will be closed after two seconds";
   confirmLoading.value = true;
   await services.signIn(state.username, state.password, type).then((res) => {
-    if (res.status === 200) {
+    if (res.code === 200) {
       message.success("登录成功", 2);
       emit("login");
       visible.value = false;
-      confirmLoading.value = false;
+    } else {
+      message.error(res.msg, 2);
     }
+    confirmLoading.value = false;
   });
+};
+const handleLogout = () => {
+  // store.commit("user/SET_TOKEN", "");
 };
 
 watchEffect(() => {
